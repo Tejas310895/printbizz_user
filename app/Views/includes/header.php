@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="public/assets/images/logo.jpg">
     <?php echo link_tag('public/assets/css/bootstrap.css'); ?>
     <?php echo link_tag('public/assets/css/bootstrap.min.css'); ?>
     <?php echo link_tag('public/assets/css/styles.css'); ?>
