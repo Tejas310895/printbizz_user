@@ -8,7 +8,9 @@
             <small class="text-body-secondary" style="font-size:0.8rem;">Vashi Station Road</small>
         </div>
         <div class="col-4 text-end p-1">
-            <?php echo img('public/assets/images/user_icon.png', false, ['class' => 'img-thumbnail w-50 border-0']); ?>
+            <a href="profile">
+                <?php echo img('public/assets/images/user_icon.png', false, ['class' => 'img-thumbnail w-50 border-0']); ?>
+            </a>
         </div>
     </div>
 </div>
@@ -92,7 +94,7 @@
                                 </div>
                             </div>
                             <div class="col-8 px-4 pt-3">
-                                <button type="button" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:10px;">ADD TO CART</button>
+                                <button type="button" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:10px;" onclick="window.location.href  ='cart';">ADD TO CART</button>
                             </div>
                         </div>
                     </div>

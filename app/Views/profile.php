@@ -1,7 +1,7 @@
 <div class="container bg-white shadow fixed-top py-2">
     <div class="row">
         <div class="col-1">
-            <button class="btn btn-transparent" type="button">
+            <button class="btn btn-transparent" type="button" onclick="history.go(-1)">
                 <i class="fa-solid fa-arrow-left fa-xl" style="color: #747474;"></i>
             </button>
         </div>
