@@ -85,12 +85,12 @@
                     </div>
                     <div class="container-fluid h-100 bg-white">
                         <div class="row fixed-bottom bg-white" style="height: 72px;">
-                            <div class="col-4 py-0 ps-4 pe-2 text-center">
-                                <label class="form-check-label fw-bold" for="secondRadio" style="font-size: 10px;">ADD COPIES</label>
-                                <div class="input-group border border-1 border" style="border-radius:10px;width: 100% !important;">
-                                    <button class="btn btn-transparent" type="button"><i class="fa fa-minus text-dark"></i></button>
-                                    <input type="text" name="item_qty" class="form-control shadow-none bg-transparent border-0 text-center" value="0" readonly>
-                                    <button class="btn btn-transparent" type="button"><i class="fa fa-plus text-dark"></i></button>
+                            <div class="col-4 py-0 ps-2 pe-0 text-center">
+                                <label class="form-check-label fw-bold ps-3" for="secondRadio" style="font-size: 10px;">ADD COPIES</label>
+                                <div class="input-group border border-1 border float-end" style="border-radius:10px;width: 85% !important;">
+                                    <button class="btn btn-transparent p-1" type="button"><i class="fa fa-minus text-dark"></i></button>
+                                    <input type="text" name="item_qty" class="form-control shadow-none bg-transparent border-0 text-center px-0" value="0" readonly>
+                                    <button class="btn btn-transparent p-1" type="button"><i class="fa fa-plus text-dark"></i></button>
                                 </div>
                             </div>
                             <div class="col-8 px-4 pt-3">
