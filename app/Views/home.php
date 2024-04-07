@@ -78,7 +78,7 @@
                             <div class="card-body">
                                 <h5 class="card-title fw-bold" style="font-size:0.9rem;">Upload your file</h5>
                                 <div class="mt-3 mb-2">
-                                    <input class="form-control" type="file" id="formFile" style="border-radius: 14px;">
+                                    <input class="form-control" type="file" id="formFileMultiple" style="border-radius: 14px;" multiple>
                                 </div>
                             </div>
                         </div>
