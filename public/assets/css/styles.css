@@ -88,3 +88,12 @@ swiper-container {
     outline: none !important;
     box-shadow: none;
  }
+
+ .otp-letter-input{
+    max-width: 60%;
+    height: 50px;
+    border: 1px solid #198754;
+    border-radius:10px;
+    text-align: center;
+    font-weight: bold;
+}

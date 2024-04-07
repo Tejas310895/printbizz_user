@@ -62,6 +62,7 @@
                 </div>
             </div>
             <button type="button" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:15px;" data-bs-toggle="modal" data-bs-target="#profile_add">ADD NEW ADDRESS</button>
+            <button type="button" id="login_sweet_alert" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:15px;">Login</button>
         </div>
     </div>
 </div>
@@ -88,3 +89,110 @@
         </div>
     </div>
 </div>
+<script>
+    $('#login_sweet_alert').click(function(e) {
+        e.preventDefault();
+        (async () => {
+            /* inputOptions can be an object or Promise */
+            const {
+                value: formValues
+            } = await Swal.fire({
+                title: "Login / Sign up with your phone number",
+                position: "bottom-end",
+                showCancelButton: false,
+                confirmButtonText: "Send Otp",
+                showLoaderOnConfirm: true,
+                showClass: {
+                    popup: `
+      animate__animated
+      animate__fadeInUp
+      --animate-duration: 10s;
+    `
+                },
+                hideClass: {
+                    popup: `
+      animate__animated
+      animate__fadeOutDown
+      --animate-duration: 10s;
+    `
+                },
+                html: `
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border border-2 border-dark border-top-0 border-end-0 border-start-0" id="basic-addon1">+ 91</span>
+                    <input type="number" class="form-control border border-2 border-dark border-top-0 border-end-0 border-start-0" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                `,
+                // focusConfirm: false,
+                preConfirm: () => {
+                    Swal.fire({
+                        title: "Enter the OTP",
+                        position: "bottom-end",
+                        showCancelButton: true,
+                        confirmButtonText: "Verify Otp",
+                        cancelButtonText: "Cancel",
+                        showLoaderOnConfirm: true,
+                        showClass: {
+                            popup: `
+      animate__animated
+      animate__fadeInUp
+      --animate-duration: 10s;
+    `
+                        },
+                        hideClass: {
+                            popup: `
+      animate__animated
+      animate__fadeOutDown
+      --animate-duration: 10s;
+    `
+                        },
+                        html: `
+                <h6 class="text-start mb-2 fs-6">Sms sent to +91 ******5397<button type="button" class="btn btn-light text-danger py-0">Change</button></h6>
+                <div class="row pt-0 pb-0 w-100" style="display: flex;justify-content: space-evenly;">
+                    <div class="col-3 px-0" style="width: 70px;">
+                        <input class="otp-letter-input" type="text">
+                    </div>
+                    <div class="col-3 px-0" style="width: 70px;">
+                        <input class="otp-letter-input" type="text">
+                    </div>
+                    <div class="col-3 px-0" style="width: 70px;">
+                        <input class="otp-letter-input" type="text">
+                    </div>
+                    <div class="col-3 px-0" style="width: 70px;">
+                        <input class="otp-letter-input" type="text">
+                    </div>
+                </div>
+                <h6 class="text-center mb-0 mt-2 fs-6">Didn't receive otp? <button type="button" class="btn btn-link text-danger py-0">Resend</button></h6>
+                `,
+                        // focusConfirm: false,
+                        preConfirm: () => {
+
+                            return [
+                                document.getElementById("swal-input1").value,
+                                document.getElementById("swal-input2").value
+                            ];
+                        }
+                    });
+                    $(".swal2-container").addClass('p-0');
+                    $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
+                    $(".swal2-title").addClass('fs-6 pt-5 text-start');
+                    $(".swal2-html-container").addClass('mx-3 mt-0');
+                    $(".swal2-styled").addClass('btn btn-block');
+                    $(".swal2-actions").addClass('mt-1 w-100 px-3');
+                    return [
+                        document.getElementById("swal-input1").value,
+                        document.getElementById("swal-input2").value
+                    ];
+                }
+            });
+            if (formValues) {
+                Swal.fire(JSON.stringify(formValues));
+            }
+        })()
+        $(".swal2-container").addClass('p-0');
+        $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
+        $(".swal2-title").addClass('fs-6 pt-5 text-start');
+        $(".swal2-html-container").addClass('mx-3 mt-2');
+        $(".swal2-actions").addClass('mt-2 w-100 px-3');
+        $(".swal2-styled").addClass('btn btn-block btn-lg w-100');
+    });
+</script>
