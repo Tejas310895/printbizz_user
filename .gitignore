@@ -126,3 +126,4 @@ nb-configuration.xml
 /phpunit*.xml
 /.phpunit.*.cache
 app/config/App.php
+composer.phar
