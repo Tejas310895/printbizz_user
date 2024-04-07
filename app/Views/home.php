@@ -85,7 +85,7 @@
                     </div>
                     <div class="container-fluid h-100 bg-white">
                         <div class="row fixed-bottom bg-white" style="height: 72px;">
-                            <div class="col-4 py-0 px-3 text-center">
+                            <div class="col-4 py-0 ps-4 pe-2 text-center">
                                 <label class="form-check-label fw-bold" for="secondRadio" style="font-size: 10px;">ADD COPIES</label>
                                 <div class="input-group border border-1 border" style="border-radius:10px;width: 100% !important;">
                                     <button class="btn btn-transparent" type="button"><i class="fa fa-minus text-dark"></i></button>
