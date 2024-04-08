@@ -107,14 +107,14 @@
                     popup: `
       animate__animated
       animate__fadeInUp
-      --animate-duration: 5s;
+      --animate-duration: 2s;
     `
                 },
                 hideClass: {
                     popup: `
       animate__animated
       animate__fadeOutDown
-      --animate-duration: 5s;
+      --animate-duration: 2s;
     `
                 },
                 html: `
@@ -137,14 +137,14 @@
                             popup: `
       animate__animated
       animate__fadeInUp
-      --animate-duration: 5s;
+      --animate-duration: 2s;
     `
                         },
                         hideClass: {
                             popup: `
       animate__animated
       animate__fadeOutDown
-      --animate-duration: 5s;
+      --animate-duration: 2s;
     `
                         },
                         html: `
@@ -180,7 +180,7 @@
                     $(".swal2-html-container").addClass('mx-3 mt-0');
                     $(".swal2-styled").addClass('btn btn-block');
                     $(".swal2-actions").addClass('mt-1 w-100 px-3');
-                    $(".swal2-actions").css('flex-direction','row-reverse');
+                    $(".swal2-actions").css('flex-direction', 'row-reverse');
                     $('.to_back').click(function(e) {
                         e.preventDefault();
                         $('#login_sweet_alert').trigger('click');
@@ -200,6 +200,6 @@
         $(".swal2-title").addClass('fs-6 pt-5 text-start');
         $(".swal2-html-container").addClass('mx-3 mt-2');
         $(".swal2-styled").addClass('btn btn-block btn-lg');
-        $(".swal2-actions").css('flex-direction','row-reverse');
+        $(".swal2-actions").css('flex-direction', 'row-reverse');
     });
 </script>
