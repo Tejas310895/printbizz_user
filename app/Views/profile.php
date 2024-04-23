@@ -13,24 +13,59 @@
 <div class="container-fluid h-100" style="background:#F0F0F0;height: 100vh !important;overflow-y:scroll;padding-top: 82px !important;">
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
-            <div class="row">
-                <div class="col-4">
-                    <img src="https://www.bhmpics.com/downloads/solid-grey-wallpaper/42.12343168.jpg" class="img img-thumbnail border border-0 rounded-circle" alt="...">
+
+            <?php
+            if (auth()->user()) :
+            ?>
+                <div class="row">
+                    <div class="col-4">
+                        <p data-letters="<?= strtoupper(substr(auth()->user()->getEmailIdentity()->name, 0, 1)) ?>" class="mb-0"></p>
+                    </div>
+                    <div class="col-7 pt-3 ps-0">
+                        <h6>Tejas Shirsat</h6>
+                        <h6 class="mb-0 text-black-50">+91 9867765397</h6>
+                        <h6 class="mb-0 text-black-50">tshirsat700@gmail.com</h6>
+                    </div>
+                    <div class="col-1 text-start">
+                        <button class="btn btn-transparent ps-0 pe-4" style="display: contents;" type="button">
+                            <i class="fa-solid fa-pencil fa-sm"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-7 pt-3 ps-0">
-                    <h6>Tejas Shirsat</h6>
-                    <h6 class="mb-0 text-black-50">+91 9867765397</h6>
-                    <h6 class="mb-0 text-black-50">tshirsat700@gmail.com</h6>
+            <?php else : ?>
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class=" fw-bold mb-2" style="font-size:0.9rem;">Create/Login the account</h6>
+                        <button type="button" class="btn btn-block btn-lg w-100 text-light rounded-0" style="background-color: #9F88FF;font-size:1rem;" onclick="login_call()">Login / Sign up</button>
+                        <p class="text-center mb-0">
+                            <small style="font-size:0.7rem;">By clicking, I accept the <strong>Terms & Conditions</strong> and <strong>Privacy Policy</strong></small>
+                        </p>
+                    </div>
                 </div>
-                <div class="col-1 text-start">
-                    <button class="btn btn-transparent ps-0 pe-4" style="display: contents;" type="button">
-                        <i class="fa-solid fa-pencil fa-sm"></i>
-                    </button>
-                </div>
-            </div>
+            <?php endif ?>
         </div>
     </div>
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">About Us</a></li>
+                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">Payment Policy</a></li>
+                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">Privacy Policy</a></li>
+                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">Terms & Conditions</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card mb-3 border border-0" style="border-radius: 15px;">
+        <div class="card-body p-1">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center border border-0">
+                    <h5 class="mb-0 fw-bold" style="font-size:1rem;">Logout</h5>
+                    <a href="logout" class="btn btn-light p-3 badge text-bg-primary rounded-pill text-dark"><i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
             <h5 class="card-title fw-bold" style="font-size:0.9rem;">Your Addresses</h5>
             <div class="row">
@@ -64,7 +99,7 @@
             <button type="button" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:15px;" data-bs-toggle="modal" data-bs-target="#profile_add">ADD NEW ADDRESS</button>
             <button type="button" id="login_sweet_alert" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:15px;">Login</button>
         </div>
-    </div>
+    </div> -->
 </div>
 <!-- Modal -->
 <div class="modal fade" id="profile_add" tabindex="-1" aria-labelledby="profile_add" aria-hidden="true">
@@ -89,117 +124,3 @@
         </div>
     </div>
 </div>
-<script>
-    $('#login_sweet_alert').click(function(e) {
-        e.preventDefault();
-        (async () => {
-            /* inputOptions can be an object or Promise */
-            const {
-                value: formValues
-            } = await Swal.fire({
-                title: "Login / Sign up with your phone number",
-                position: "bottom-end",
-                showCancelButton: true,
-                confirmButtonText: "Send Otp",
-                showLoaderOnConfirm: true,
-                allowOutsideClick: false,
-                showClass: {
-                    popup: `
-      animate__animated
-      animate__fadeInUp
-      --animate-duration: 2s;
-    `
-                },
-                hideClass: {
-                    popup: `
-      animate__animated
-      animate__fadeOutDown
-      --animate-duration: 2s;
-    `
-                },
-                html: `
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border border-2 border-dark border-top-0 border-end-0 border-start-0" id="basic-addon1">+ 91</span>
-                    <input type="number" class="form-control border border-2 border-dark border-top-0 border-end-0 border-start-0" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                `,
-                // focusConfirm: false,
-                preConfirm: () => {
-                    Swal.fire({
-                        title: "Enter the OTP",
-                        position: "bottom-end",
-                        showCancelButton: true,
-                        confirmButtonText: "Verify Otp",
-                        cancelButtonText: "Cancel",
-                        showLoaderOnConfirm: true,
-                        allowOutsideClick: false,
-                        showClass: {
-                            popup: `
-      animate__animated
-      animate__fadeInUp
-      --animate-duration: 2s;
-    `
-                        },
-                        hideClass: {
-                            popup: `
-      animate__animated
-      animate__fadeOutDown
-      --animate-duration: 2s;
-    `
-                        },
-                        html: `
-                <h6 class="text-start mb-2 fs-6">Sms sent to +91 ******5397<button type="button" class="btn btn-light text-danger py-0 to_back">Change</button></h6>
-                <div class="row pt-0 pb-0 w-100" style="display: flex;justify-content: space-evenly;">
-                    <div class="col-3 px-0" style="width: 70px;">
-                        <input class="otp-letter-input" type="text">
-                    </div>
-                    <div class="col-3 px-0" style="width: 70px;">
-                        <input class="otp-letter-input" type="text">
-                    </div>
-                    <div class="col-3 px-0" style="width: 70px;">
-                        <input class="otp-letter-input" type="text">
-                    </div>
-                    <div class="col-3 px-0" style="width: 70px;">
-                        <input class="otp-letter-input" type="text">
-                    </div>
-                </div>
-                <h6 class="text-center mb-0 mt-2 fs-6">Didn't receive otp? <button type="button" class="btn btn-link text-danger py-0">Resend</button></h6>
-                `,
-                        // focusConfirm: false,
-                        preConfirm: () => {
-
-                            return [
-                                document.getElementById("swal-input1").value,
-                                document.getElementById("swal-input2").value
-                            ];
-                        }
-                    });
-                    $(".swal2-container").addClass('p-0');
-                    $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
-                    $(".swal2-title").addClass('fs-6 pt-5 text-start');
-                    $(".swal2-html-container").addClass('mx-3 mt-0');
-                    $(".swal2-styled").addClass('btn btn-block');
-                    $(".swal2-actions").addClass('mt-1 w-100 px-3');
-                    $(".swal2-actions").css('flex-direction', 'row-reverse');
-                    $('.to_back').click(function(e) {
-                        e.preventDefault();
-                        $('#login_sweet_alert').trigger('click');
-                    });
-                    return [
-                        document.getElementById("swal-input1").value,
-                        document.getElementById("swal-input2").value
-                    ];
-                }
-            });
-            if (formValues) {
-                Swal.fire(JSON.stringify(formValues));
-            }
-        })()
-        $(".swal2-container").addClass('p-0');
-        $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
-        $(".swal2-title").addClass('fs-6 pt-5 text-start');
-        $(".swal2-html-container").addClass('mx-3 mt-2');
-        $(".swal2-styled").addClass('btn btn-block btn-lg');
-        $(".swal2-actions").css('flex-direction', 'row-reverse');
-    });
-</script>
