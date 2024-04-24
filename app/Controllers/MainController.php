@@ -202,11 +202,10 @@ class MainController extends BaseController
             $last_id = $this->users->orderBy('id desc')->asArray()->findAll();
 
             if (count($last_id) == 0) {
-                $last_id = 0;
+                $last_id = '0';
             } else {
                 $last_id = array_shift($last_id);
             }
-print_r($last_id);die;
             $new_user = new User([
                 'username' => 'USER_' . $last_id['id'],
                 'email'    => $postdata['mobile_number'],
