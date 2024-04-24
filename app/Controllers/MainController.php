@@ -199,12 +199,11 @@ class MainController extends BaseController
             $data['status'] = 1;
         } else {
             $all_users = auth()->getProvider();
-            $last_id = $this->users->orderBy('id desc')->asArray()->findAll();
-            print_r($last_id);die;
+            $last_id = $this->users->orderBy('id desc')->asArray()->limit(1, 0)->findAll();
             if (count($last_id) == 0) {
                 $last_id = 0;
             } else {
-                $last_id = array_shift($last_id)[0];
+                $last_id = array_shift($last_id)['id'];
             }
             $new_user = new User([
                 'username' => 'USER_' . $last_id,
