@@ -56,6 +56,9 @@
         </div>
     </div>
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
+  <?php
+            if (auth()->user()) :
+            ?>
         <div class="card-body p-1">
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center border border-0">
@@ -65,6 +68,7 @@
             </ul>
         </div>
     </div>
+<?php endif ?>
     <!-- <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
             <h5 class="card-title fw-bold" style="font-size:0.9rem;">Your Addresses</h5>
