@@ -206,7 +206,7 @@ class MainController extends BaseController
             } else {
                 $last_id = array_shift($last_id);
             }
-print_r($new_user);die;
+print_r($last_id);die;
             $new_user = new User([
                 'username' => 'USER_' . $last_id['id'],
                 'email'    => $postdata['mobile_number'],
