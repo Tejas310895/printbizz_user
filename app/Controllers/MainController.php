@@ -200,6 +200,7 @@ class MainController extends BaseController
         } else {
             $all_users = auth()->getProvider();
             $last_id = $this->users->orderBy('id desc')->asArray()->findAll();
+print_r($last_id);die;
             if (count($last_id) == 0) {
                 $last_id = 0;
             } else {
