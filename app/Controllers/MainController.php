@@ -200,7 +200,7 @@ class MainController extends BaseController
         } else {
             $all_users = auth()->getProvider();
             $last_id = $this->users->orderBy('id desc')->asArray()->findAll();
-print_r($last_id);die;
+
             if (count($last_id) == 0) {
                 $last_id = 0;
             } else {
@@ -210,6 +210,7 @@ print_r($last_id);die;
                 'username' => 'USER_' . $last_id['id'],
                 'email'    => $postdata['mobile_number'],
             ]);
+print_r($new_user);die;
             if ($all_users->save($new_user)) {
                 $data['user_id'] = $all_users->findById($all_users->getInsertID());
                 $this->session->set('otp', $otp);
