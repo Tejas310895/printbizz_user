@@ -206,11 +206,12 @@ class MainController extends BaseController
             } else {
                 $last_id = array_shift($last_id);
             }
+print_r($new_user);die;
             $new_user = new User([
                 'username' => 'USER_' . $last_id['id'],
                 'email'    => $postdata['mobile_number'],
             ]);
-print_r($new_user);die;
+
             if ($all_users->save($new_user)) {
                 $data['user_id'] = $all_users->findById($all_users->getInsertID());
                 $this->session->set('otp', $otp);
