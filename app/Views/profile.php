@@ -22,8 +22,8 @@
                         <p data-letters="<?= strtoupper(substr(auth()->user()->getEmailIdentity()->name, 0, 1)) ?>" class="mb-0"></p>
                     </div>
                     <div class="col-7 pt-3 ps-0">
-                        <h6>Tejas Shirsat</h6>
-                        <h6 class="mb-0 text-black-50">+91 9867765397</h6>
+                        <h6><?= auth()->user()->getEmailIdentity()->name ?></h6>
+                        <h6 class="mb-0 text-black-50">+91 <?= auth()->user()->email ?></h6>
                         <h6 class="mb-0 text-black-50">tshirsat700@gmail.com</h6>
                     </div>
                     <div class="col-1 text-start">
@@ -45,6 +45,82 @@
             <?php endif ?>
         </div>
     </div>
+    <?php
+    if (auth()->user()) :
+    ?>
+        <div class="card mb-3 border border-0" style="border-radius: 15px;height: 40vh;overflow-y: scroll;">
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <?php for ($i = 0; $i < 10; $i++) : ?>
+                        <div class="card mb-3 border border-0 shadow-sm">
+                            <div class="card-body py-1">
+                                <div class="step_container d-flex justify-content-center align-items-center">
+
+                                    <div class="progresses">
+
+                                        <div class="steps" style="background: #4bb7ff;">
+                                            <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">Placed</p>
+                                            <span><i class="fa-solid fa-check"></i></span>
+                                        </div>
+
+                                        <span class="line" style="background: #4bb7ff;"></span>
+
+                                        <div class="steps" style="background: #4bb7ff;">
+                                            <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">In Process</p>
+                                            <span><i class="fa-solid fa-check"></i></span>
+                                        </div>
+
+                                        <span class="line" style="background: #D1D1D1;"></span>
+
+                                        <div class="steps" style="background: #D1D1D1;">
+                                            <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">Out For Delivery</p>
+                                            <span></span>
+                                        </div>
+
+
+                                        <span class="line" style="background: #D1D1D1;"></span>
+
+                                        <div class="steps" style="background: #D1D1D1;">
+                                            <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">Delivered</p>
+                                            <span class="font-weight-bold"></span>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- <ol class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-start border border-0">
+                                    <div class="ms-2 me-auto"> -->
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center border border-0 px-1">
+                                        <figure class="mb-0 mt-2">
+                                            <blockquote class="blockquote" style="font-size: 0.7rem;">
+                                                <p class="text-dark fw-bold">Estimated Delivery time</p>
+                                            </blockquote>
+                                            <figcaption class="blockquote-footer mb-0" style="font-size:0.7rem;">
+                                                Fri, 26-04-2-24 09:00 - 11:00 PM
+                                            </figcaption>
+                                        </figure>
+                                        <span class="badge bg-white rounded-pill">
+                                            <button class="btn btn-primary p-0 rounded-circle mt-2" type="button">
+                                                <i class="fa-solid fa-circle-chevron-right fa-xl"></i>
+                                            </button>
+                                        </span>
+                                    </li>
+                                </ul>
+                                <!-- <div class="fw-light" style="font-size:0.6rem;">Arriving</div>
+                                        <h6 class="fw-bold" style="font-size:0.7rem;"> <span><i class="fa-solid fa-person-biking fa-lg"></i></span> Fri, 26-04-2-24 09:00 - 11:00 PM</h6> -->
+                                <!-- </div>
+                                    <span class="badge bg-primary rounded-pill"><i class="fa-solid fa-chevron-right"></i></span>
+                                </li>
+                            </ol> -->
+                            </div>
+                        </div>
+                    <?php endfor ?>
+                </ul>
+            </div>
+        </div>
+    <?php endif ?>
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
             <ul class="list-group list-group-flush">
@@ -56,20 +132,20 @@
         </div>
     </div>
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
-  <?php
-            if (auth()->user()) :
-            ?>
-        <div class="card-body p-1">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center border border-0">
-                    <h5 class="mb-0 fw-bold" style="font-size:1rem;">Logout</h5>
-                    <a href="logout" class="btn btn-light p-3 badge text-bg-primary rounded-pill text-dark"><i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i></a>
-                </li>
-            </ul>
-        </div>
+        <?php
+        if (auth()->user()) :
+        ?>
+            <div class="card-body p-1">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center border border-0">
+                        <h5 class="mb-0 fw-bold" style="font-size:1rem;">Logout</h5>
+                        <a href="logout" class="btn btn-light p-3 badge text-bg-primary rounded-pill text-dark"><i class="fa-solid fa-arrow-right-from-bracket fa-xl"></i></a>
+                    </li>
+                </ul>
+            </div>
     </div>
 <?php endif ?>
-    <!-- <div class="card mb-3 border border-0" style="border-radius: 15px;">
+<!-- <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
             <h5 class="card-title fw-bold" style="font-size:0.9rem;">Your Addresses</h5>
             <div class="row">

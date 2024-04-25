@@ -8,7 +8,6 @@ class Orders extends Model
 {
     const STATUS_ORDER_PLACED = 1;
     const STATUS_ORDER_PROCESSING = 2;
-    const STATUS_ORDER_PROCESSED = 3;
     const STATUS_ORDER_OUT_FOR_DELEVERY = 4;
     const STATUS_ORDER_DELEVERED = 4;
     const STATUS_PAYMENT_PENDING = 6;
