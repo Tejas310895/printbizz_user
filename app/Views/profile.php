@@ -15,9 +15,6 @@
         <div class="card-body">
 
             <?php
-
-            use CodeIgniter\Shield\Models\UserIdentityModel;
-
             if (auth()->user()) :
             ?>
                 <div class="row">
