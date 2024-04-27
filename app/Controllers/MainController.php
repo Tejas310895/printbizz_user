@@ -225,7 +225,7 @@ class MainController extends BaseController
     }
     public function otp_verification(): ResponseInterface
     {
-        $postdata = $this->request->getPost(); 
+        $postdata = $this->request->getPost();
         if ($postdata['otp'] == $this->session->get('otp')) {
             $user = auth()->getProvider()->findByCredentials(['email' => $postdata['mobile_number']]);
             auth()->login($user);
@@ -283,6 +283,7 @@ class MainController extends BaseController
         }
         $order_arr = [
             'order_no' => $order_no,
+            'user_id' => auth()->user()->id,
             'status' => $this->orders::STATUS_ORDER_PLACED,
             'itemnary' => json_encode($postdata['itemnary']),
             'logs' => json_encode([now() => 'Order Placed']),
