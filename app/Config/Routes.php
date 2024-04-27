@@ -12,6 +12,7 @@ $routes->match(['post'], 'login', 'MainController::login');
 $routes->match(['get'], 'logout', 'MainController::logout');
 $routes->match(['post'], 'otp_verification', 'MainController::otp_verification');
 $routes->match(['post'], 'resend_otp', 'MainController::resend_otp');
+$routes->match(['post'], 'add_fullname', 'MainController::add_fullname');
 
 
 $routes->match(['get'], 'order_success', 'MainController::order_placed');

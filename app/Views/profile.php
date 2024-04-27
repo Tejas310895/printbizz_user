@@ -15,6 +15,9 @@
         <div class="card-body">
 
             <?php
+
+            use CodeIgniter\Shield\Models\UserIdentityModel;
+
             if (auth()->user()) :
             ?>
                 <div class="row">
@@ -49,6 +52,9 @@
     if (auth()->user()) :
     ?>
         <div class="card mb-3 border border-0" style="border-radius: 15px;height: 40vh;overflow-y: scroll;">
+            <div class="card-header bg-white text-center sticky-top">
+                My Orders
+            </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
                     <?php for ($i = 0; $i < 10; $i++) : ?>

@@ -10,6 +10,7 @@ use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Model;
 use CodeIgniter\Shield\Entities\User;
+use CodeIgniter\Shield\Models\UserIdentityModel;
 use CodeIgniter\Shield\Models\UserModel;
 use Config\App;
 use Dompdf\Dompdf;
@@ -24,6 +25,7 @@ class MainController extends BaseController
         $this->institutes = new \App\Models\Institutions();
         $this->orders = new \App\Models\Orders();
         $this->users = new UserModel();
+        $this->userIdentities = new UserIdentityModel;
     }
     public function index()
     {
@@ -192,7 +194,7 @@ class MainController extends BaseController
         $data['postdata'] = $postdata;
         $users = auth()->getProvider()->findByCredentials(['email' => $postdata['mobile_number']]);
         $otp = 1111;
-        if ($users) {
+        if (!empty($users)) {
             $data['user_id'] = $users->id;
             $this->session->set('otp', $otp);
             $data['otp'] = $otp;
@@ -214,7 +216,7 @@ class MainController extends BaseController
                 $data['user_id'] = $all_users->findById($all_users->getInsertID());
                 $this->session->set('otp', $otp);
                 $data['otp'] = $otp;
-                $data['status'] = 2;
+                $data['status'] = 1;
             } else {
                 $data['status'] = 0;
             }
@@ -223,10 +225,15 @@ class MainController extends BaseController
     }
     public function otp_verification(): ResponseInterface
     {
-        $postdata = $this->request->getPost();
+        $postdata = $this->request->getPost(); 
         if ($postdata['otp'] == $this->session->get('otp')) {
             $user = auth()->getProvider()->findByCredentials(['email' => $postdata['mobile_number']]);
             auth()->login($user);
+            if (strlen(auth()->user()->getEmailIdentity()->name) > 1) {
+                $data['name'] = 1;
+            } else {
+                $data['name'] = 0;
+            }
             $data['valid'] = 1;
         } else {
             $data['valid'] = 0;
@@ -244,6 +251,16 @@ class MainController extends BaseController
         return $this->response->setJSON($data);
     }
 
+    public function add_fullname()
+    {
+        $postdata = $this->request->getPost();
+        if ($this->userIdentities->set($postdata)->where('user_id', auth()->user()->id)->update()) {
+            $valid = 1;
+        } else {
+            $valid = 0;
+        }
+        return $this->response->setJSON($valid);
+    }
     public function logout()
     {
         auth()->logout();

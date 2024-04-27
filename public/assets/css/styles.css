@@ -159,3 +159,8 @@ swiper-slide img {
     border-radius: 50%;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2), 0 0px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
+.blockquote-footer::before {
+    content: '\f48b';
+    font-family: FontAwesome;
+}

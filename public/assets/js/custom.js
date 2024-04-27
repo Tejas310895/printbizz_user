@@ -135,34 +135,133 @@ function login_call() {
                                             data: { 'otp': otp_str, 'mobile_number': response.postdata.mobile_number },
                                             success: function (response) {
                                                 if (response.valid == 1) {
-                                                    Swal.fire({
-                                                        position: "bottom-end",
-                                                        icon: "success",
-                                                        title: "Login Successful",
-                                                        showConfirmButton: false,
-                                                        showClass: {
-                                                            popup: `
-                                              animate__animated
-                                              animate__fadeInUp
-                                              --animate-duration: 1s;
-                                            `
-                                                        },
-                                                        hideClass: {
-                                                            popup: `
-                                              animate__animated
-                                              animate__fadeOutDown
-                                              --animate-duration: 1s;
-                                            `
-                                                        },
-                                                        timer: 2000
-                                                    });
+                                                    if (response.name == 0) {
+                                                        (async () => {
+                                                            const { value: full_name } = await Swal.fire({
+                                                                title: "Enter your fullname",
+                                                                position: "bottom-end",
+                                                                showCancelButton: false,
+                                                                confirmButtonText: "Submit",
+                                                                showLoaderOnConfirm: true,
+                                                                allowOutsideClick: false,
+                                                                showClass: {
+                                                                    popup: `
+                                                                    animate__animated
+                                                                    animate__fadeInUp
+                                                                    --animate-duration: 1s;
+        `
+                                                                },
+                                                                hideClass: {
+                                                                    popup: `
+                                                                animate__animated
+                                                                animate__fadeOutDown
+                                                                --animate-duration: 1s;
+        `
+                                                                },
+                                                                html: `
+                                                                <div class="input-group">
+                                                                    <input id="full_name" type="text" class="form-control border border-2 border-dark border-top-0 border-end-0 border-start-0" aria-describedby="basic-addon1">
+                                                                </div>
+                                                                `,
+                                                                focusConfirm: false,
+                                                                preConfirm: () => {
+                                                                    var full_name = document.getElementById('full_name').value;
+                                                                    if (full_name.length > 1) {
+                                                                        $.ajax({
+                                                                            type: "post",
+                                                                            url: "add_fullname",
+                                                                            data: { 'name': full_name },
+                                                                            success: function (response) {
+                                                                                if (response == 1) {
+                                                                                    Swal.fire({
+                                                                                        position: "bottom-end",
+                                                                                        icon: "success",
+                                                                                        title: "Login Successful",
+                                                                                        showConfirmButton: false,
+                                                                                        showClass: {
+                                                                                            popup: `
+                                                                              animate__animated
+                                                                              animate__fadeInUp
+                                                                              --animate-duration: 1s;
+                                                                            `
+                                                                                        },
+                                                                                        hideClass: {
+                                                                                            popup: `
+                                                                              animate__animated
+                                                                              animate__fadeOutDown
+                                                                              --animate-duration: 1s;
+                                                                            `
+                                                                                        },
+                                                                                        timer: 2000
+                                                                                    });
+                                                                                    setTimeout(() => {
+                                                                                        window.location.reload();
+                                                                                    }, 2500);
+                                                                                    $(".swal2-container").addClass('p-0');
+                                                                                    $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
+                                                                                    $(".swal2-title").addClass('pt-1');
+                                                                                    $(".swal2-title").css('font-size', '1.3rem');
+                                                                                } else {
+                                                                                    Swal.showValidationMessage(`Entry Failed! Try Again`);
+                                                                                    $(".swal2-validation-message").css('font-size', 'small');
+                                                                                    $(".swal2-validation-message").css('justify-content', 'flex-start');
+                                                                                    $(".swal2-validation-message").css('margin-top', '0');
+                                                                                    $(".swal2-validation-message").css('background-color', 'transparent');
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                        return document.getElementById("full_name").value;
+                                                                    } else {
+                                                                        Swal.showValidationMessage(`Field is mandatory`);
+                                                                        $(".swal2-validation-message").css('font-size', 'small');
+                                                                        $(".swal2-validation-message").css('justify-content', 'flex-start');
+                                                                        $(".swal2-validation-message").css('margin-top', '0');
+                                                                        $(".swal2-validation-message").css('background-color', 'transparent');
+                                                                    }
+                                                                }
+                                                            });
+                                                            $(".swal2-container").addClass('p-0');
+                                                            $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
+                                                            $(".swal2-title").addClass('fs-6 pt-5 text-start');
+                                                            $(".swal2-html-container").addClass('mx-3 mt-2');
+                                                            $(".swal2-styled").addClass('btn btn-block btn-lg');
+                                                            $(".swal2-actions").css('flex-direction', 'row-reverse');
+                                                        })()
+                                                    } else {
+                                                        Swal.fire({
+                                                            position: "bottom-end",
+                                                            icon: "success",
+                                                            title: "Login Successful",
+                                                            showConfirmButton: false,
+                                                            showClass: {
+                                                                popup: `
+                                                  animate__animated
+                                                  animate__fadeInUp
+                                                  --animate-duration: 1s;
+                                                `
+                                                            },
+                                                            hideClass: {
+                                                                popup: `
+                                                  animate__animated
+                                                  animate__fadeOutDown
+                                                  --animate-duration: 1s;
+                                                `
+                                                            },
+                                                            timer: 2000
+                                                        });
+                                                        setTimeout(() => {
+                                                            window.location.reload();
+                                                        }, 2500);
+                                                    }
                                                     $(".swal2-container").addClass('p-0');
                                                     $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
-                                                    $(".swal2-title").addClass('pt-1');
-                                                    $(".swal2-title").css('font-size', '1.3rem');
-                                                    setTimeout(() => {
-                                                        window.location.reload();
-                                                    }, 2500);
+                                                    $(".swal2-title").addClass('fs-6 pt-5 text-start');
+                                                    $(".swal2-html-container").addClass('mx-3 mt-2');
+                                                    $(".swal2-styled").addClass('btn btn-block btn-lg');
+                                                    $(".swal2-actions").css('flex-direction', 'row-reverse');
+                                                    // setTimeout(() => {
+                                                    //     window.location.reload();
+                                                    // }, 2500);
                                                 }
                                             }
                                         });
@@ -179,19 +278,19 @@ function login_call() {
                                     }
                                 }
                             });
-                            if (otp) {
-                                $.ajax({
-                                    type: "post",
-                                    url: "otp_verification",
-                                    data: { 'otp': otp },
-                                    success: function (result) {
-                                        Swal.showValidationMessage(`Invalid OTP`);
-                                        $(".swal2-validation-message").css('font-size', 'small');
-                                        $(".swal2-validation-message").css('margin-top', '0');
-                                        $(".swal2-validation-message").css('background-color', 'transparent');
-                                    }
-                                });
-                            }
+                            // if (otp) {
+                            //     $.ajax({
+                            //         type: "post",
+                            //         url: "otp_verification",
+                            //         data: { 'otp': otp },
+                            //         success: function (result) {
+                            //             Swal.showValidationMessage(`Invalid OTP`);
+                            //             $(".swal2-validation-message").css('font-size', 'small');
+                            //             $(".swal2-validation-message").css('margin-top', '0');
+                            //             $(".swal2-validation-message").css('background-color', 'transparent');
+                            //         }
+                            //     });
+                            // }
                         })()
                         $(".swal2-container").addClass('p-0');
                         $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
