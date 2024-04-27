@@ -52,7 +52,7 @@
     if (auth()->user()) :
     ?>
         <div class="card mb-3 border border-0" style="border-radius: 15px;height: 40vh;overflow-y: scroll;">
-            <div class="card-header bg-white text-center sticky-top">
+            <div class="card-header bg-white text-center sticky-top border border-0 shadow">
                 My Orders
             </div>
             <div class="card-body">
