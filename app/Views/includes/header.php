@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, target-densityDpi=device-dpi, minimal-ui' />
     <link rel=" icon" type="image/x-icon" href="public/assets/images/logo.jpg">
     <?php echo link_tag('public/assets/css/bootstrap.css?v=' . fileatime('public/assets/css/bootstrap.css')); ?>
     <?php echo link_tag('public/assets/css/bootstrap.min.css?v=' . fileatime('public/assets/css/bootstrap.min.css')); ?>
