@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Ovo&family=Poppins');
+@import url('https://fonts.googleapis.com/css2?family=Overpass');
 
 
 body {
-    font-family: 'Ovo', serif;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Overpass';
 }
 
 .modal-dialog {

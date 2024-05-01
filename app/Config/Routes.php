@@ -8,6 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->match(['get', 'post'], '/', 'MainController::index');
 $routes->match(['get', 'post'], 'cart', 'MainController::cart');
 $routes->match(['get', 'post'], 'profile', 'MainController::profile');
+$routes->match(['get', 'post'], 'order_details/(:num)', 'MainController::order_details/$1');
+
 $routes->match(['post'], 'login', 'MainController::login');
 $routes->match(['get'], 'logout', 'MainController::logout');
 $routes->match(['post'], 'otp_verification', 'MainController::otp_verification');

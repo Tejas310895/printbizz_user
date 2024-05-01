@@ -10,6 +10,7 @@
         <div class="col-4 p-1 text-center">
             <h5 class="fw-semibold mt-2 mb-0 fs-6"><i class="fa-solid fa-location-dot" style="color: #FFD43B;"></i> Where am I <i class="fa-solid fa-chevron-down fa-2xs"></i></h5>
             <small class="text-body-secondary" style="font-size:0.8rem;">Vashi Station Road</small>
+
         </div>
         <div class="col-4 text-end p-1">
             <a href="profile">
@@ -95,12 +96,14 @@
         modal_body += '<div class="col-2 px-2 pt-2 pb-0">';
         modal_body += '<img src="' + JSON.parse(product_arr[prod_id].img)[0] + '" class="d-block" style="border-radius: 15px;width:50px; height:50px;" alt="...">';
         modal_body += '</div>';
-        modal_body += '<div class="col-10 py-4 ps-0">';
-        modal_body += '<h6 class="fw-bold"> ' + product_arr[prod_id].name + ' </h6>';
+        modal_body += '<div class="col-10 py-3 ps-0">';
+        modal_body += '<h6 class="fw-bold mb-0"> ' + product_arr[prod_id].name + ' </h6>';
+        modal_body += '<small class="fw-bold d-block" style="font-size: 0.7rem;"> ₹ ' + product_arr[prod_id].default_price + ' / Page </small>';
         modal_body += '</div>';
         modal_body += '</div>';
         modal_body += '<div class="container-fluid shadow-none py-3" style="height:59vh;overflow-y: scroll;background:#F0F0F0;">';
         modal_body += '<input type="hidden" name="product_id" value="' + product_arr[prod_id].id + '" required>';
+        modal_body += '<input type="hidden" name="default_price" value="' + product_arr[prod_id].default_price + '" required>';
         $.each(product_arr[prod_id].group, function(gi, gv) {
             modal_body += '<div class="card mb-3 border border-0" style="border-radius: 15px;">';
             modal_body += '<div class="card-body">';
@@ -110,22 +113,26 @@
                 $.each(gv.items, function(ti, tv) {
                     var is_checked = (ti == 0) ? 'checked' : ' ';
                     var item_value = JSON.stringify({
-                        [gv.id]: tv.id
+                        'g_id': gv.id,
+                        'i_id': tv.id,
+                        'price': tv.price
                     });
                     modal_body += '<li class="list-group-item border-0 pb-0">';
                     modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                    modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + '</label>';
+                    modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
                     modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
                     modal_body += '</li>';
                 });
             } else if (gv.type == <?= ProductItemnaryGroup::TYPE_MULTI_SELECT ?>) {
                 $.each(gv.items, function(ti, tv) {
                     var item_value = JSON.stringify({
-                        [gv.id]: tv.id
+                        'g_id': gv.id,
+                        'i_id': tv.id,
+                        'price': tv.price
                     });
                     modal_body += '<li class="list-group-item border-0 pb-0">';
                     modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                    modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + '</label>';
+                    modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
                     modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'>";
                     modal_body += '</li>';
                 });

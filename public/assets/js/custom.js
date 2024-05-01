@@ -48,8 +48,8 @@ function login_call() {
             },
             html: `
             <div class="input-group">
-                <span class="input-group-text bg-transparent border border-2 border-dark border-top-0 border-end-0 border-start-0" id="basic-addon1">+ 91</span>
-                <input id="mobile_no" type="number" onKeyPress="if(this.value.length==10) return false;" class="form-control border border-2 border-dark border-top-0 border-end-0 border-start-0" aria-describedby="basic-addon1">
+                <span class="input-group-text bg-transparent border border-2 border-dark border-top-0 border-end-0 border-start-0 pe-0" id="basic-addon1">+ 91</span>
+                <input id="mobile_no" type="number" onKeyPress="if(this.value.length==10) return false;" class="form-control ps-1 border border-2 border-dark border-top-0 border-end-0 border-start-0" aria-describedby="basic-addon1">
             </div>
             `,
             // focusConfirm: false,
@@ -199,8 +199,10 @@ function login_call() {
                                                                                     }, 2500);
                                                                                     $(".swal2-container").addClass('p-0');
                                                                                     $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
-                                                                                    $(".swal2-title").addClass('pt-1');
-                                                                                    $(".swal2-title").css('font-size', '1.3rem');
+                                                                                    $(".swal2-title").addClass(' fs-3 text-enter');
+                                                                                    $(".swal2-html-container").addClass('mx-3 mt-2');
+                                                                                    $(".swal2-styled").addClass('btn btn-block btn-lg');
+                                                                                    $(".swal2-actions").css('flex-direction', 'row-reverse');
                                                                                 } else {
                                                                                     Swal.showValidationMessage(`Entry Failed! Try Again`);
                                                                                     $(".swal2-validation-message").css('font-size', 'small');
@@ -255,7 +257,7 @@ function login_call() {
                                                     }
                                                     $(".swal2-container").addClass('p-0');
                                                     $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
-                                                    $(".swal2-title").addClass('fs-6 pt-5 text-start');
+                                                    $(".swal2-title").addClass('fs-3 text-enter');
                                                     $(".swal2-html-container").addClass('mx-3 mt-2');
                                                     $(".swal2-styled").addClass('btn btn-block btn-lg');
                                                     $(".swal2-actions").css('flex-direction', 'row-reverse');

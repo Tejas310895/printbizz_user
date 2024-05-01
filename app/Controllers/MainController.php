@@ -15,6 +15,8 @@ use CodeIgniter\Shield\Models\UserModel;
 use Config\App;
 use Dompdf\Dompdf;
 
+use function PHPUnit\Framework\fileExists;
+
 class MainController extends BaseController
 {
     public function __construct()
@@ -30,6 +32,7 @@ class MainController extends BaseController
     public function index()
     {
         $postdata = $this->request->getPost();
+
         $inv_cookies = new Cookie('inventory');
         $products = $this->products->where('status', Products::STATUS_ACTIVE)->findAll();
         $products = array_reduce($products, function ($carry, $val) {
@@ -177,15 +180,16 @@ class MainController extends BaseController
             $response['status'] = $status;
             return $this->response->setJSON($response);
         }
-        return view('includes/header.php') .
-            view('cart.php', $data) .
-            view('includes/footer.php');
+        return $this->render_page('cart.php', $data);
     }
     public function profile()
     {
-        return view('includes/header.php') .
-            view('profile.php') .
-            view('includes/footer.php');
+        if (auth()->user()) {
+            $data['orders'] = $this->orders->where('user_id', auth()->user()->id)->findAll();
+        } else {
+            $data['order'] = [];
+        }
+        return $this->render_page('profile.php', $data);
     }
 
     public function login(): ResponseInterface
@@ -281,20 +285,85 @@ class MainController extends BaseController
         } else {
             $order_no = 'PRB' . now() . $last_id['id'];
         }
-        $order_arr = [
-            'order_no' => $order_no,
-            'user_id' => auth()->user()->id,
-            'status' => $this->orders::STATUS_ORDER_PLACED,
-            'itemnary' => json_encode($postdata['itemnary']),
-            'logs' => json_encode([now() => 'Order Placed']),
-            'order_date' => date("Y-m-d H:i:s")
-        ];
-        if ($this->orders->save($order_arr)) {
-            $data['status'] = 1;
+        $client = \Config\Services::curlrequest();
+        $curl_status = 1;
+        foreach ($postdata['itemnary'] as $itemnary) {
+            foreach ($itemnary['files'] as $file) {
+                $file = new \CodeIgniter\Files\File(WRITEPATH . $file);
+                $cfile = new \CURLFile($file->getFileInfo()->getPathname(), $file->getMimeType(), $file->getFilename());
+                $client->setHeader('Content-Type', 'multipart/form-data');
+                $response = $client->request("POST", 'http://localhost/printslug/admin/add_image', [
+                    'multipart' => [
+                        'folder' => $file->getPathInfo()->getFilename(),
+                        'name' => $cfile
+                    ]
+                ]);
+                if ($response->getStatusCode() != 200) {
+                    $curl_status = 0;
+                    break;
+                }
+            }
+        }
+
+        if ($curl_status == 1) {
+            $order_arr = [
+                'order_no' => $order_no,
+                'user_id' => auth()->user()->id,
+                'status' => $this->orders::STATUS_ORDER_PLACED,
+                'itemnary' => json_encode($postdata['itemnary']),
+                'logs' => json_encode([now() => 'Order Placed']),
+                'order_date' => date("Y-m-d H:i:s"),
+                'college_id' => $postdata['address'],
+                'charges' => json_encode($postdata['charges'])
+            ];
+            if ($this->orders->save($order_arr)) {
+                $data['status'] = 1;
+            } else {
+                $data['status'] = 0;
+            }
         } else {
             $data['status'] = 0;
         }
 
         return $this->response->setJSON($data);
+    }
+
+    public function order_details($id)
+    {
+        if (auth()->user()) {
+            $order_data = $data['order'] = $this->orders->find($id);
+            $cart_data = json_decode($order_data['itemnary'], true);
+            foreach ($cart_data as $itemnary) {
+                $products = array_shift($this->products->where('status', Products::STATUS_ACTIVE)->where('id', $itemnary['product_id'])->findAll());
+                $products['default_price'] = $itemnary['default_price'];
+                $product_group = [];
+                if (isset($itemnary['itemnary_single'])) {
+                    foreach ($itemnary['itemnary_single'] as $prod_group) {
+                        $prod_group = json_decode($prod_group, true);
+                        $itemnary_group = array_shift($this->itemnary_group->where('id', $prod_group['g_id'])->findAll());
+                        $itemnary_group['items'] = array_shift($this->itemnary->where('id', $prod_group['i_id'])->findAll());
+                        $itemnary_group['items']['price'] = $prod_group['price'];
+                        $product_group[$itemnary_group['id']]['name'] = $itemnary_group['name'];
+                        $product_group[$itemnary_group['id']]['data'][] = $itemnary_group;
+                    }
+                }
+                if (isset($itemnary['itemnary_multi'])) {
+                    foreach ($itemnary['itemnary_multi'] as $prod_group) {
+                        $prod_group = json_decode($prod_group, true);
+                        $itemnary_group = array_shift($this->itemnary_group->where('id', $prod_group['g_id'])->findAll());
+                        $itemnary_group['items'] = array_shift($this->itemnary->where('id', $prod_group['i_id'])->findAll());
+                        $itemnary_group['items']['price'] = $prod_group['price'];
+                        $product_group[$itemnary_group['id']]['name'] = $itemnary_group['name'];
+                        $product_group[$itemnary_group['id']]['data'][] = $itemnary_group;
+                    }
+                }
+                $products['group'] = $product_group;
+                $products['order_data'] = $itemnary;
+                $data['products'][] = $products;
+            }
+        } else {
+            $data['order'] = [];
+        }
+        return $this->render_page('order_summary.php', $data);
     }
 }

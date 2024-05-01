@@ -163,20 +163,29 @@ use App\Models\ProductItemnaryGroup;
         var address = $('#address_details').val();
         var cookie_products = JSON.parse(getCookie('inventory'));
         if (address != null) {
+            element.html('<span role="status">Loading</span><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>');
             $.ajax({
                 type: "post",
                 url: "checkout",
                 data: {
+                    'charges': {
+                        'gst': $('.gst').data('gst'),
+                        'del_charges': $('.del_charges').data('del_charges')
+                    },
                     'address': address,
                     'itemnary': cookie_products
                 },
                 success: function(response) {
-                    if (response.status == 1) {
-                        setCookie('inventory', "", -1);
-                        window.location.replace('order_success');
-                    } else {
-                        element.removeAttr('disabled');
-                    }
+                    setTimeout(() => {
+                        if (response.status == 1) {
+                            setCookie('inventory', "", -1);
+                            window.location.replace('order_success');
+                        } else {
+                            alert('Error occured! Try again');
+                            element.removeAttr('disabled');
+                            element.text('CHECKOUT');
+                        }
+                    }, 1000);
                 }
             });
         } else {
@@ -198,18 +207,10 @@ use App\Models\ProductItemnaryGroup;
                     var price = parseInt(cproduct.default_price);
                     var items_added = [];
                     $.each(cv.itemnary_single, function(isi, isv) {
-                        $.each(JSON.parse(isv), function(jsi, jsv) {
-                            sitem = cproduct['group'][jsi]['items'][jsv];
-                            items_added.push(sitem.name);
-                            price += parseInt(sitem.price);
-                        });
+                        price += parseInt(JSON.parse(isv).price);
                     });
                     $.each(cv.itemnary_multi, function(imi, imv) {
-                        $.each(JSON.parse(imv), function(jmi, jmv) {
-                            mitem = cproduct['group'][jmi]['items'][jmv];
-                            items_added.push(mitem.name);
-                            price += parseInt(mitem.price);
-                        });
+                        price += parseInt(JSON.parse(imv).price);
                     });
                     item_tot = parseInt(price) * (parseInt(cv['copies']) * parseInt(cv['pages']));
                     itemnary_template += '<div class="row my-2">';
@@ -240,7 +241,7 @@ use App\Models\ProductItemnaryGroup;
 
                     cart_item_tot += item_tot;
                 });
-                var gst = Math.round(cart_item_tot * 0.05);
+                var gst = parseFloat((cart_item_tot * 0.05).toFixed(2));
                 var del_charges = 30;
                 var grand_total = cart_item_tot + gst + del_charges;
                 billing_template += '<h6 class="mb-1 fs-6 text-secondary fw-bold mb-3">Bill Summary</h6>';
@@ -257,7 +258,7 @@ use App\Models\ProductItemnaryGroup;
                 billing_template += '<h6 class="fw-light" style="font-size:0.9rem;">GST Charges</h6>';
                 billing_template += '</div>';
                 billing_template += '<div class="col-4 text-end">';
-                billing_template += '<h6 class="fw-light" style="font-size:0.9rem;">₹ ' + gst + '</h6>';
+                billing_template += '<h6 class="fw-light gst" style="font-size:0.9rem;" data-gst="' + gst + '">₹ ' + gst + '</h6>';
                 billing_template += '</div>';
                 billing_template += '</div>';
                 billing_template += '<div class="row">';
@@ -265,7 +266,7 @@ use App\Models\ProductItemnaryGroup;
                 billing_template += '<h6 class="fw-light" style="font-size:0.9rem;">Delivery Charges</h6>';
                 billing_template += '</div>';
                 billing_template += '<div class="col-4 text-end">';
-                billing_template += '<h6 class="fw-light" style="font-size:0.9rem;">₹ ' + del_charges + '</h6>';
+                billing_template += '<h6 class="fw-light del_charges" style="font-size:0.9rem;" data-del_charges="' + del_charges + '">₹ ' + del_charges + '</h6>';
                 billing_template += '</div>';
                 billing_template += '</div>';
                 billing_template += '<div class="row border border-bottom-0 border-start-0 border-end-0 pt-3">';
@@ -273,7 +274,7 @@ use App\Models\ProductItemnaryGroup;
                 billing_template += '<h6 class="fw-bold fs-6">Grand Total</h6>';
                 billing_template += '</div>';
                 billing_template += '<div class="col-4 text-end">';
-                billing_template += '<h6 class="fw-bold fs-6">₹ ' + grand_total + '</h6>';
+                billing_template += '<h6 class="fw-bold fs-6">₹ ' + (grand_total).toFixed(2) + '</h6>';
                 billing_template += '</div>';
                 billing_template += '</div>';
 
@@ -326,18 +327,18 @@ use App\Models\ProductItemnaryGroup;
                 $.each(gv.items, function(ti, tv) {
                     var is_checked = ' ';
                     var item_value = JSON.stringify({
-                        [gv.id]: tv.id
+                        'g_id': gv.id,
+                        'i_id': tv.id,
+                        'price': tv.price
                     });
                     $.each(cookie_prod.itemnary_single, function(imi, imv) {
-                        $.each(JSON.parse(imv), function(mti, mtv) {
-                            if (parseInt(mti) == gv.id && parseInt(mtv) == tv.id) {
-                                is_checked = 'checked';
-                            }
-                        });
+                        if (parseInt(JSON.parse(imv).g_id) == gv.id && parseInt(JSON.parse(imv).i_id) == tv.id) {
+                            is_checked = 'checked';
+                        }
                     });
                     modal_body += '<li class="list-group-item border-0 pb-0">';
                     modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                    modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + '</label>';
+                    modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
                     modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
                     modal_body += '</li>';
                 });
@@ -345,18 +346,18 @@ use App\Models\ProductItemnaryGroup;
                 $.each(gv.items, function(ti, tv) {
                     var is_checked = ' ';
                     var item_value = JSON.stringify({
-                        [gv.id]: tv.id
+                        'g_id': gv.id,
+                        'i_id': tv.id,
+                        'price': tv.price
                     });
                     $.each(cookie_prod.itemnary_multi, function(imi, imv) {
-                        $.each(JSON.parse(imv), function(mti, mtv) {
-                            if (parseInt(mti) == gv.id && parseInt(mtv) == tv.id) {
-                                is_checked = 'checked';
-                            }
-                        });
+                        if (parseInt(JSON.parse(imv).g_id) == gv.id && parseInt(JSON.parse(imv).i_id) == tv.id) {
+                            is_checked = 'checked';
+                        }
                     });
                     modal_body += '<li class="list-group-item border-0 pb-0">';
                     modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                    modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + '</label>';
+                    modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
                     modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
                     modal_body += '</li>';
                 });

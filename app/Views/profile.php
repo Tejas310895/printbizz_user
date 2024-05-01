@@ -15,6 +15,9 @@
         <div class="card-body">
 
             <?php
+
+            use App\Models\Orders;
+
             if (auth()->user()) :
             ?>
                 <div class="row">
@@ -54,46 +57,74 @@
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    <?php for ($i = 0; $i < 10; $i++) : ?>
+                    <?php foreach ($orders as $order) : ?>
                         <div class="card mb-3 border border-0 shadow-sm">
                             <div class="card-body py-1">
                                 <div class="step_container d-flex justify-content-center align-items-center">
 
                                     <div class="progresses">
+                                        <?php
 
-                                        <div class="steps" style="background: #4bb7ff;">
+                                        if ($order['status'] == Orders::STATUS_ORDER_PLACED) {
+                                            $order_placed = 1;
+                                        } else {
+                                            $order_placed = 0;
+                                        }
+                                        if ($order['status'] == Orders::STATUS_ORDER_PROCESSING) {
+                                            $order_process = 1;
+                                            $order_placed = 1;
+                                        } else {
+                                            $order_process = 0;
+                                        }
+                                        if ($order['status'] == Orders::STATUS_ORDER_OUT_FOR_DELIVERY) {
+                                            $order_out = 1;
+                                            $order_placed = 1;
+                                            $order_process = 1;
+                                        } else {
+                                            $order_out = 0;
+                                        }
+                                        if ($order['status'] == Orders::STATUS_ORDER_DELIVERED) {
+                                            $order_delevered = 1;
+                                            $order_placed = 1;
+                                            $order_process = 1;
+                                            $order_out = 1;
+                                        } else {
+                                            $order_delevered = 0;
+                                        }
+
+
+                                        ?>
+
+                                        <div class="steps" style="background:<?= ($order_placed) ? '#4bb7ff' : '#D1D1D1' ?> ;">
                                             <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">Placed</p>
-                                            <span><i class="fa-solid fa-check"></i></span>
+                                            <span><?= ($order_placed) ? '<i class="fa-solid fa-check"></i>' : '' ?></span>
                                         </div>
 
-                                        <span class="line" style="background: #4bb7ff;"></span>
+                                        <span class="line" style="background: <?= ($order_process) ? '#4bb7ff' : '#D1D1D1' ?>;"></span>
 
-                                        <div class="steps" style="background: #4bb7ff;">
+                                        <div class="steps" style="background: <?= ($order_process) ? '#4bb7ff' : '#D1D1D1' ?>;">
                                             <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">In Process</p>
-                                            <span><i class="fa-solid fa-check"></i></span>
+                                            <span><?= ($order_process) ? '<i class="fa-solid fa-check"></i>' : '' ?></span>
                                         </div>
 
-                                        <span class="line" style="background: #D1D1D1;"></span>
+                                        <span class="line" style="background: <?= ($order_out) ? '#4bb7ff' : '#D1D1D1' ?>;"></span>
 
-                                        <div class="steps" style="background: #D1D1D1;">
+                                        <div class="steps" style="background: <?= ($order_out) ? '#4bb7ff' : '#D1D1D1' ?>;">
                                             <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">Out For Delivery</p>
-                                            <span></span>
+                                            <span><?= ($order_out) ? '<i class="fa-solid fa-check"></i>' : '' ?></span>
                                         </div>
 
 
-                                        <span class="line" style="background: #D1D1D1;"></span>
+                                        <span class="line" style="background: <?= ($order_delevered) ? '#4bb7ff' : '#D1D1D1' ?>;"></span>
 
-                                        <div class="steps" style="background: #D1D1D1;">
+                                        <div class="steps" style="background: <?= ($order_delevered) ? '#4bb7ff' : '#D1D1D1' ?>;">
                                             <p class="text-dark fw-bold text-uppercase" style="display:block;position:absolute;top:5vh;font-size:0.5rem;">Delivered</p>
-                                            <span class="font-weight-bold"></span>
+                                            <span class="font-weight-bold"><?= ($order_delevered) ? '<i class="fa-solid fa-check"></i>' : '' ?></span>
                                         </div>
 
                                     </div>
 
                                 </div>
-                                <!-- <ol class="list-group">
-                                <li class="list-group-item d-flex justify-content-between align-items-start border border-0">
-                                    <div class="ms-2 me-auto"> -->
                                 <ul class="list-group">
                                     <li class="list-group-item d-flex justify-content-between align-items-center border border-0 px-1">
                                         <figure class="mb-0 mt-2">
@@ -101,25 +132,28 @@
                                                 <p class="text-dark fw-bold">Estimated Delivery time</p>
                                             </blockquote>
                                             <figcaption class="blockquote-footer mb-0" style="font-size:0.7rem;">
-                                                Fri, 26-04-2-24 09:00 - 11:00 PM
+                                                <?php
+
+                                                if (date('H', strtotime($order['created_at'])) > '20') {
+                                                    $order_date = date('D, d-m-y 08:00 - 11:00 A', strtotime($order['created_at'] . ' +2 day'));
+                                                } else {
+                                                    $order_date = date('D, d-m-y 08:00 - 11:00 A', strtotime($order['created_at'] . ' +1 day'));
+                                                }
+
+                                                ?>
+                                                <?= $order_date ?>
                                             </figcaption>
                                         </figure>
                                         <span class="badge bg-white rounded-pill">
-                                            <button class="btn btn-primary p-0 rounded-circle mt-2" type="button">
+                                            <a href="order_details/<?= $order['id'] ?>" class="btn btn-primary p-0 rounded-circle mt-2" type="button">
                                                 <i class="fa-solid fa-circle-chevron-right fa-xl"></i>
-                                            </button>
+                                            </a>
                                         </span>
                                     </li>
                                 </ul>
-                                <!-- <div class="fw-light" style="font-size:0.6rem;">Arriving</div>
-                                        <h6 class="fw-bold" style="font-size:0.7rem;"> <span><i class="fa-solid fa-person-biking fa-lg"></i></span> Fri, 26-04-2-24 09:00 - 11:00 PM</h6> -->
-                                <!-- </div>
-                                    <span class="badge bg-primary rounded-pill"><i class="fa-solid fa-chevron-right"></i></span>
-                                </li>
-                            </ol> -->
                             </div>
                         </div>
-                    <?php endfor ?>
+                    <?php endforeach ?>
                 </ul>
             </div>
         </div>
