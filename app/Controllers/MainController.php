@@ -279,7 +279,7 @@ class MainController extends BaseController
     public function checkout()
     {
         $postdata = $this->request->getPost();
-        $last_id = array_shift($this->orders->orderBy('id', SORT_DESC)->limit(1)->findAll());
+        $last_id = array_shift($this->orders->orderBy('id desc')->limit(1)->findAll());
         if (empty($last_id)) {
             $order_no = 'PRB' . now() . '0';
         } else {
