@@ -317,6 +317,7 @@ class MainController extends BaseController
                 'charges' => json_encode($postdata['charges'])
             ];
             if ($this->orders->save($order_arr)) {
+                service('queue')->push('assign_partners', 'assign_partner', ['order_id' => $this->orders->getInsertID()]);
                 $data['status'] = 1;
             } else {
                 $data['status'] = 0;

@@ -20,7 +20,7 @@ class Orders extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['order_no', 'type', 'status', 'itemnary', 'order_date', 'del_status', 'logs', 'created_by', 'updated_by', 'user_id', 'college_id', 'charges'];
+    protected $allowedFields = ['order_no', 'type', 'status', 'itemnary', 'order_date', 'del_status', 'logs', 'created_by', 'updated_by', 'user_id', 'college_id', 'charges', 'partner_id'];
 
     // Dates
     protected $useTimestamps = false;
