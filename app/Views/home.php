@@ -156,9 +156,9 @@
         modal_body += '<div class="col-4 py-0 ps-2 pe-0 text-center">';
         modal_body += '<label class="form-check-label fw-bold ps-3" for="secondRadio" style="font-size: 10px;">ADD COPIES</label>';
         modal_body += '<div class="input-group border border-1 border float-end" style="border-radius:10px;width: 85% !important;">';
-        modal_body += '<button class="btn btn-transparent p-1" type="button" onclick="decrement_copy($(this));"><i class="fa fa-minus text-dark"></i></button>';
+        modal_body += '<button class="btn btn-transparent px-2" type="button" onclick="decrement_copy($(this));"><i class="fa fa-minus text-dark"></i></button>';
         modal_body += '<input type="number" name="copies" class="form-control shadow-none bg-transparent border-0 text-center px-0" value="0" readonly required>';
-        modal_body += '<button class="btn btn-transparent p-1" type="button" onclick="increment_copy($(this));"><i class="fa fa-plus text-dark"></i></button>';
+        modal_body += '<button class="btn btn-transparent px-2" type="button" onclick="increment_copy($(this));"><i class="fa fa-plus text-dark"></i></button>';
         modal_body += '</div>';
         modal_body += '</div>';
         modal_body += '<div class="col-8 px-4 pt-3">';
