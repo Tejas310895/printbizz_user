@@ -1,9 +1,9 @@
 <div class="container bg-white shadow fixed-top py-2">
     <div class="row">
         <div class="col-1">
-            <button class="btn btn-transparent" type="button" onclick="history.go(-1)">
+            <a href="<?=base_url()?>" class="btn btn-transparent" type="button">
                 <i class="fa-solid fa-arrow-left fa-xl" style="color: #747474;"></i>
-            </button>
+            </a>
         </div>
         <div class="col-11 ps-5 pt-2">
             <h5>Your Profile</h5>
@@ -27,7 +27,7 @@
                     <div class="col-7 pt-3 ps-0">
                         <h6><?= auth()->user()->getEmailIdentity()->name ?></h6>
                         <h6 class="mb-0 text-black-50">+91 <?= auth()->user()->email ?></h6>
-                        <h6 class="mb-0 text-black-50">tshirsat700@gmail.com</h6>
+                        <h6 class="mb-0 text-black-50"></h6>
                     </div>
                     <div class="col-1 text-start">
                         <button class="btn btn-transparent ps-0 pe-4" style="display: contents;" type="button">
