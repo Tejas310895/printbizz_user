@@ -24,7 +24,7 @@
         <div class="carousel-inner">
             <?php for ($i = 0; $i < 4; $i++) : ?>
                 <div class="carousel-item active">
-                    <img src="public/assets/images/banner.jpg" class="d-block w-100" style="border-radius: 25px;height: 23vh !important;" alt="...">
+                    <img src="public/assets/images/banner.png" class="d-block w-100" style="border-radius: 25px;max-height: 23vh !important;" alt="...">
                 </div>
             <?php endfor ?>
         </div>
