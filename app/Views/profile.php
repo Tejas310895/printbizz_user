@@ -1,11 +1,11 @@
 <div class="container bg-white shadow fixed-top py-2">
     <div class="row">
-        <div class="col-1">
+        <div class="col-2">
             <a href="<?=base_url()?>" class="btn btn-transparent" type="button">
                 <i class="fa-solid fa-arrow-left fa-xl" style="color: #747474;"></i>
             </a>
         </div>
-        <div class="col-11 ps-5 pt-2">
+        <div class="col-10 ps-1 pt-2">
             <h5>Your Profile</h5>
         </div>
     </div>

@@ -50,8 +50,11 @@
             <div class="col-6">
                 <h6 class="mb-0 mt-2 fw-bold" id="item_count_text"><?= (get_cookie('inventory')) ? count(json_decode(get_cookie('inventory'))) : ' ' ?> Items Added</h6>
             </div>
-            <div class="col-6 text-end">
+            <div class="col-5 text-end px-0">
                 <a href="cart" type="button" class="btn btn-danger" style="border-radius:10px;">View Cart</a>
+            </div>
+            <div class="col-1 px-0">
+                <button type="button" class="btn btn-transparent rounded-circle" onclick="clear_cart($(this))" style="border-radius:10px;"><i class="fa-solid fa-xmark fa-lg"></i></button>
             </div>
         </div>
     </div>
@@ -225,5 +228,10 @@
                 }
             });
         }
+    }
+
+    function clear_cart(element) {
+        setCookie('inventory', "", -1);
+        element.parent().parent().parent().hide();
     }
 </script>
