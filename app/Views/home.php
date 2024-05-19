@@ -97,7 +97,7 @@
         modal_body += '<form onsubmit="modal_product_submit($(this));return false;" action="" method="post" enctype="multipart/form-data">';
         modal_body += '<div class="row px-4">';
         modal_body += '<div class="col-2 px-2 pt-2 pb-0">';
-        modal_body += '<img src="' + JSON.parse(product_arr[prod_id].img)[0] + '" class="d-block" style="border-radius: 15px;width:50px; height:50px;" alt="...">';
+        modal_body += '<img src="https://admin.printbizz.in/writable/' + JSON.parse(product_arr[prod_id].img)[0] + '" class="d-block" style="border-radius: 15px;width:50px; height:50px;" alt="...">';
         modal_body += '</div>';
         modal_body += '<div class="col-10 py-3 ps-0 py-1">';
         modal_body += '<h6 class="fw-bold mb-0"> ' + product_arr[prod_id].name + ' </h6>';
