@@ -36,7 +36,7 @@
         <?php foreach ($products as $product) : ?>
             <div class="col-4 g-3">
                 <div class="card border border-0 shadow-lg" style="border-radius:20px;">
-                    <img src="<?= json_decode($product['img'], true)[0] ?>" class="card-img-top" style="border-radius:20px;" alt="...">
+                    <img src="https://admin.printbizz.in/writable/<?= json_decode($product['img'], true)[0] ?>" class="card-img-top" style="border-radius:20px;" alt="...">
                     <?= csrf_field('prod_csrf') ?>
                     <button type="button" class="btn btn-light shadow w-100 py-1" style="border-radius:20px;position: absolute;bottom: -1px;" onclick="product_modal($(this),<?= $product['id'] ?>)">ADD</button>
                 </div>

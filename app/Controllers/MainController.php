@@ -280,6 +280,7 @@ class MainController extends BaseController
     {
         $postdata = $this->request->getPost();
         $last_id = array_shift($this->orders->orderBy('id desc')->limit(1)->findAll());
+        try {
         if (empty($last_id)) {
             $order_no = 'PRB' . now() . '0';
         } else {
@@ -287,22 +288,25 @@ class MainController extends BaseController
         }
         $client = \Config\Services::curlrequest();
         $curl_status = 1;
-        foreach ($postdata['itemnary'] as $itemnary) {
-            foreach ($itemnary['files'] as $file) {
-                $file = new \CodeIgniter\Files\File(WRITEPATH . $file);
-                $cfile = new \CURLFile($file->getFileInfo()->getPathname(), $file->getMimeType(), $file->getFilename());
-                $client->setHeader('Content-Type', 'multipart/form-data');
-                $response = $client->request("POST", 'https://admin.printbizz.in/add_image', [
-                    'multipart' => [
-                        'folder' => $file->getPathInfo()->getFilename(),
-                        'name' => $cfile
-                    ]
-                ]);
-                if ($response->getStatusCode() != 200) {
-                    $curl_status = 0;
-                    break;
+            foreach ($postdata['itemnary'] as $itemnary) {
+                foreach ($itemnary['files'] as $file) {
+                    $file = new \CodeIgniter\Files\File(WRITEPATH . $file);
+                    $cfile = new \CURLFile($file->getFileInfo()->getPathname(), $file->getMimeType(), $file->getFilename());
+                    $client->setHeader('Content-Type', 'multipart/form-data');
+                    $response = $client->request("POST", 'http://localhost/printslug/admin/add_image', [
+                        'multipart' => [
+                            'folder' => $file->getPathInfo()->getFilename(),
+                            'name' => $cfile
+                        ]
+                    ]);
+                    if ($response->getStatusCode() != 200) {
+                        $curl_status = 0;
+                        break;
+                    }
                 }
             }
+        } catch (\Throwable $th) {
+            echo $th;die;
         }
 
         if ($curl_status == 1) {
