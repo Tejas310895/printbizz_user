@@ -161,10 +161,10 @@
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">About Us</a></li>
-                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">Payment Policy</a></li>
-                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">Privacy Policy</a></li>
-                <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary">Terms & Conditions</a></li>
+                <li class="list-group-item"><a href="docs/about_us" class="text-decoration-none text-secondary">About Us</a></li>
+                <li class="list-group-item"><a href="docs/payment_policy" class="text-decoration-none text-secondary">Payment Policy</a></li>
+                <li class="list-group-item"><a href="docs/privacy_policy" class="text-decoration-none text-secondary">Privacy Policy</a></li>
+                <li class="list-group-item"><a href="docs/terms_conditions" class="text-decoration-none text-secondary">Terms & Conditions</a></li>
             </ul>
         </div>
     </div>

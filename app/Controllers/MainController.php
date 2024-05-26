@@ -196,49 +196,53 @@ class MainController extends BaseController
     {
         $postdata = $this->request->getPost();
         $data['postdata'] = $postdata;
-        $users = auth()->getProvider()->findByCredentials(['email' => $postdata['mobile_number']]);
         $otp = 1111;
-        if (!empty($users)) {
-            $data['user_id'] = $users->id;
-            $this->session->set('otp', $otp);
-            $data['otp'] = $otp;
-            $data['status'] = 1;
-        } else {
-            $all_users = auth()->getProvider();
-            $last_id = $this->users->orderBy('id desc')->asArray()->limit(1, 0)->findAll();
-            if (count($last_id) == 0) {
-                $last_id = 0;
-            } else {
-                $last_id = array_shift($last_id)['id'];
-            }
-            $new_user = new User([
-                'username' => 'USER_' . $last_id,
-                'email'    => $postdata['mobile_number'],
-            ]);
-
-            if ($all_users->save($new_user)) {
-                $data['user_id'] = $all_users->findById($all_users->getInsertID());
-                $this->session->set('otp', $otp);
-                $data['otp'] = $otp;
-                $data['status'] = 1;
-            } else {
-                $data['status'] = 0;
-            }
-        }
+        $this->session->set('otp', $otp);
+        $data['otp'] = $otp;
+        $data['status'] = 1;
         return $this->response->setJSON($data);
     }
     public function otp_verification(): ResponseInterface
     {
         $postdata = $this->request->getPost();
         if ($postdata['otp'] == $this->session->get('otp')) {
-            $user = auth()->getProvider()->findByCredentials(['email' => $postdata['mobile_number']]);
-            auth()->login($user);
-            if (strlen(auth()->user()->getEmailIdentity()->name) > 1) {
-                $data['name'] = 1;
-            } else {
-                $data['name'] = 0;
+            try {
+                $users = auth()->getProvider()->findByCredentials(['email' => $postdata['mobile_number']]);
+                if (!empty($users)) {
+                    $data['user_id'] = $users->id;
+                    auth()->login($users);
+                    $data['status'] = 1;
+                } else {
+                    $all_users = auth()->getProvider();
+                    $last_id = $this->users->orderBy('id desc')->asArray()->limit(1, 0)->findAll();
+                    if (count($last_id) == 0) {
+                        $last_id = 0;
+                    } else {
+                        $last_id = array_shift($last_id)['id'];
+                    }
+                    $new_user = new User([
+                        'username' => 'USER_' . $last_id,
+                        'email'    => $postdata['mobile_number']
+                    ]);
+                    if ($all_users->save($new_user)) {
+                        $data['user_id'] = $save_user = $all_users->findById($all_users->getInsertID());
+                        $save_user->activate();
+                        auth()->login($save_user);
+                        $data['status'] = 1;
+                    } else {
+                        $data['status'] = 0;
+                    }
+                }
+                if (strlen(auth()->user()->getEmailIdentity()->name) > 1) {
+                    $data['name'] = 1;
+                } else {
+                    $data['name'] = 0;
+                }
+                $data['valid'] = 1;
+            } catch (\Throwable $th) {
+                echo $th;
+                die;
             }
-            $data['valid'] = 1;
         } else {
             $data['valid'] = 0;
         }
@@ -281,13 +285,13 @@ class MainController extends BaseController
         $postdata = $this->request->getPost();
         $last_id = array_shift($this->orders->orderBy('id desc')->limit(1)->findAll());
         try {
-        if (empty($last_id)) {
-            $order_no = 'PRB' . now() . '0';
-        } else {
-            $order_no = 'PRB' . now() . $last_id['id'];
-        }
-        $client = \Config\Services::curlrequest();
-        $curl_status = 1;
+            if (empty($last_id)) {
+                $order_no = 'PRB' . now() . '0';
+            } else {
+                $order_no = 'PRB' . now() . $last_id['id'];
+            }
+            $client = \Config\Services::curlrequest();
+            $curl_status = 1;
             foreach ($postdata['itemnary'] as $itemnary) {
                 foreach ($itemnary['files'] as $file) {
                     $file = new \CodeIgniter\Files\File(WRITEPATH . $file);
@@ -306,7 +310,8 @@ class MainController extends BaseController
                 }
             }
         } catch (\Throwable $th) {
-            echo $th;die;
+            echo $th;
+            die;
         }
 
         if ($curl_status == 1) {
@@ -370,5 +375,17 @@ class MainController extends BaseController
             $data['order'] = [];
         }
         return $this->render_page('order_summary.php', $data);
+    }
+
+    public function documents($name){
+        if($name == 'about_us'){
+            return $this->render_page('docs/about_us.php',['name' => $name]);
+        }elseif($name == 'privacy_policy'){
+            return $this->render_page('docs/privacy_policy.php',['name' => $name]);
+        }elseif($name == 'terms_conditions'){
+            return $this->render_page('docs/terms_conditions.php',['name' => $name]);
+        }else{
+            return redirect()->to('/');
+        }
     }
 }
