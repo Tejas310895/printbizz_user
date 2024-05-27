@@ -5,7 +5,7 @@
 
             use App\Models\ProductItemnaryGroup;
 
-            echo img('public/assets/images/logo.jpg', false, ['class' => 'img-thumbnail w-50 border-0']); ?>
+            echo img('public/assets/images/logo.jpg', false, ['class' => 'img-thumbnail border-0','style' => 'width:40%;']); ?>
         </div>
         <div class="col-4 p-1 text-center">
             <h5 class="fw-semibold mt-2 mb-0 fs-6"><i class="fa-solid fa-location-dot" style="color: #FFD43B;"></i> Where am I <i class="fa-solid fa-chevron-down fa-2xs"></i></h5>
@@ -14,7 +14,7 @@
         </div>
         <div class="col-4 text-end p-1">
             <a href="profile">
-                <?php echo img('public/assets/images/user_icon.png', false, ['class' => 'img-thumbnail w-50 border-0']); ?>
+                <?php echo img('public/assets/images/user_icon.png', false, ['class' => 'img-thumbnail border-0','style' => 'width:40%;']); ?>
             </a>
         </div>
     </div>
