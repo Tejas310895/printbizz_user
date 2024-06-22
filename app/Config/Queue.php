@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Config;
 
+
 use CodeIgniter\Queue\Config\Queue as BaseQueue;
 use CodeIgniter\Queue\Exceptions\QueueException;
 use CodeIgniter\Queue\Handlers\DatabaseHandler;
@@ -103,5 +104,6 @@ class Queue extends BaseQueue
      */
     public array $jobHandlers = [
         'assign_partner' => AssignPartner::class,
+        'complaint_mail' => ComplaintMail::class,
     ];
 }

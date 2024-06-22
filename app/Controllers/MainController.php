@@ -16,6 +16,8 @@ use CodeIgniter\Shield\Models\UserModel;
 use Config\App;
 use Dompdf\Dompdf;
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 use function PHPUnit\Framework\fileExists;
 
 class MainController extends BaseController
@@ -364,6 +366,7 @@ class MainController extends BaseController
 
     public function order_details($id)
     {
+        $postdata = $this->request->getPost();
         if (auth()->user()) {
             $order_data = $data['order'] = $this->orders->find($id);
             $cart_data = json_decode($order_data['itemnary'], true);
@@ -397,7 +400,15 @@ class MainController extends BaseController
             }
         } else {
             $data['order'] = [];
+            return redirect()->to('/');
         }
+
+        if (isset($postdata['submit_complaint'])) {
+            unset($postdata['submit_complaint']);
+            service('queue')->push('complaint_mail', 'complaint_mail', $postdata);
+            echo "<script>alert('Your complaint is submitted')</script>";
+        }
+        $data['order_id'] = $id;
         return $this->render_page('order_summary.php', $data);
     }
 

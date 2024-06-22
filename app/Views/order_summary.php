@@ -204,8 +204,40 @@ use App\Models\Orders;
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><a href="#" class="text-decoration-none text-info"> <i class="fa-solid fa-download"></i> Download Invoice</a></li>
                 <li class="list-group-item"><a href="#" class="text-decoration-none text-secondary"> <i class="fa-solid fa-headset"></i> Get Support</a></li>
-                <li class="list-group-item"><a href="#" class="text-decoration-none text-danger"> <i class="fa-solid fa-comment-dots"></i> Raise Complaint</a></li>
+                <?php if (auth()->user()->getEmailIdentity()->email) : ?>
+                    <li class="list-group-item"><button class="btn btn-link px-0 text-decoration-none text-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop"> <i class="fa-solid fa-comment-dots"></i> Raise Complaint</button></li>
+                <?php else : ?>
+                    <li class="list-group-item"><a href="<?= base_url() ?>/profile">Update your email to raise complaint</a></li>
+                <?php endif ?>
             </ul>
         </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog m-0" style="width: 100%;">
+        <?= form_open() ?>
+        <div class="modal-content">
+            <div class="modal-header py-2 border border-0">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Raise Complaint</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="order_id" value="<?= $order_id ?>">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="subject" id="floatingInput" max="25" placeholder="Enter the subject" required>
+                    <label for="floatingInput">Subject</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" name="comments" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" required></textarea>
+                    <label for="floatingTextarea2">Comments</label>
+                </div>
+            </div>
+            <div class="modal-footer py-2 border border-0">
+                <button type="submit" name="submit_complaint" class="btn btn-primary btn-block w-100">Submit Complaint</button>
+            </div>
+        </div>
+        <?= form_close() ?>
     </div>
 </div>

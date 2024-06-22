@@ -242,6 +242,7 @@
     </div>
 </div> -->
 <!-- Modal -->
+ <?php if (auth()->user()) : ?>
 <div class="modal fade" id="profile_edit" tabindex="-1" aria-labelledby="profile_edit" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="display: contents;">
         <div class="modal-content">
@@ -260,7 +261,7 @@
         </div>
     </div>
 </div>
-
+<?php endif ?>
 <script>
     $("form").submit(function(e) {
         e.preventDefault();
