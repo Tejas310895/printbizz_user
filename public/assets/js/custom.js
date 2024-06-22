@@ -206,7 +206,7 @@ function login_call() {
                                                                                     $(".swal2-container").addClass('p-0');
                                                                                     $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
                                                                                     $(".swal2-title").addClass(' fs-3 text-enter');
-                                                                                    $(".swal2-html-container").addClass('mx-3 mt-2');
+                                                                                    $(".swal2-html-container").addClass('mx-0 px-3 mt-0');
                                                                                     $(".swal2-styled").addClass('btn btn-block btn-lg');
                                                                                     $(".swal2-actions").css('flex-direction', 'row-reverse');
                                                                                 } else {
@@ -231,7 +231,7 @@ function login_call() {
                                                             $(".swal2-container").addClass('p-0');
                                                             $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
                                                             $(".swal2-title").addClass('fs-6 pt-5 text-start');
-                                                            $(".swal2-html-container").addClass('mx-3 mt-2');
+                                                            $(".swal2-html-container").addClass('mx-0 px-3 mt-0');
                                                             $(".swal2-styled").addClass('btn btn-block btn-lg');
                                                             $(".swal2-actions").css('flex-direction', 'row-reverse');
                                                         })()
@@ -264,7 +264,7 @@ function login_call() {
                                                     $(".swal2-container").addClass('p-0');
                                                     $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
                                                     $(".swal2-title").addClass('fs-3 text-enter');
-                                                    $(".swal2-html-container").addClass('mx-3 mt-2');
+                                                    $(".swal2-html-container").addClass('mx-0 px-3 mt-0');
                                                     $(".swal2-styled").addClass('btn btn-block btn-lg');
                                                     $(".swal2-actions").css('flex-direction', 'row-reverse');
                                                     setTimeout(() => {
@@ -300,7 +300,7 @@ function login_call() {
                         $(".swal2-container").addClass('p-0');
                         $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
                         $(".swal2-title").addClass('fs-6 pt-5 text-start');
-                        $(".swal2-html-container").addClass('mx-3 mt-0');
+                        $(".swal2-html-container").addClass('mx-0 px-3 mt-0');
                         $(".swal2-styled").addClass('btn btn-block');
                         $(".swal2-actions").addClass('mt-1 w-100 px-3');
                         $(".swal2-actions").css('flex-direction', 'row-reverse');
@@ -371,7 +371,7 @@ function login_call() {
     $(".swal2-container").addClass('p-0');
     $(".swal2-modal").css('border-radius', '30px 30px 0px 0px');
     $(".swal2-title").addClass('fs-6 pt-5 text-start');
-    $(".swal2-html-container").addClass('mx-3 mt-2');
+    $(".swal2-html-container").addClass('mx-0 px-3 mt-0');
     $(".swal2-styled").addClass('btn btn-block btn-lg');
     $(".swal2-actions").css('flex-direction', 'row-reverse');
 };
