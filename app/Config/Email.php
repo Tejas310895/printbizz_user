@@ -13,7 +13,7 @@ class Email extends BaseConfig
     /**
      * The "user agent"
      */
-    public string $userAgent = 'CodeIgniter';
+    public string $userAgent = '';
 
     /**
      * The mail sending protocol: mail, sendmail, smtp
@@ -28,27 +28,27 @@ class Email extends BaseConfig
     /**
      * SMTP Server Hostname
      */
-    public string $SMTPHost = '';
+    public string $SMTPHost = 'smtp.hostinger.com';
 
     /**
      * SMTP Username
      */
-    public string $SMTPUser = '';
+    public string $SMTPUser = 'help@printbizz.in';
 
     /**
      * SMTP Password
      */
-    public string $SMTPPass = '';
+    public string $SMTPPass = 'Printbizz@#2024';
 
     /**
      * SMTP Port
      */
-    public int $SMTPPort = 25;
+    public int $SMTPPort = 465;
 
     /**
      * SMTP Timeout (in seconds)
      */
-    public int $SMTPTimeout = 5;
+    public int $SMTPTimeout = 30;
 
     /**
      * Enable persistent SMTP connections
@@ -62,7 +62,7 @@ class Email extends BaseConfig
      *             to the server. 'ssl' means implicit SSL. Connection on port
      *             465 should set this to ''.
      */
-    public string $SMTPCrypto = 'tls';
+    public string $SMTPCrypto = 'ssl';
 
     /**
      * Enable word-wrap
@@ -117,5 +117,5 @@ class Email extends BaseConfig
     /**
      * Enable notify message from server
      */
-    public bool $DSN = false;
+    public bool $DSN = true;
 }

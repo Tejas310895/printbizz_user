@@ -5,7 +5,7 @@
 
             use App\Models\ProductItemnaryGroup;
 
-            echo img('public/assets/images/logo.jpg', false, ['class' => 'img-thumbnail border-0','style' => 'width:40%;']); ?>
+            echo img('public/assets/images/logo.jpg', false, ['class' => 'img-thumbnail border-0', 'style' => 'width:40%;']); ?>
         </div>
         <div class="col-4 p-1 text-center">
             <h5 class="fw-semibold mt-2 mb-0 fs-6"><i class="fa-solid fa-location-dot" style="color: #FFD43B;"></i> Where am I <i class="fa-solid fa-chevron-down fa-2xs"></i></h5>
@@ -14,7 +14,7 @@
         </div>
         <div class="col-4 text-end p-1">
             <a href="profile">
-                <?php echo img('public/assets/images/user_icon.png', false, ['class' => 'img-thumbnail border-0','style' => 'width:40%;']); ?>
+                <?php echo img('public/assets/images/user_icon.png', false, ['class' => 'img-thumbnail border-0', 'style' => 'width:40%;']); ?>
             </a>
         </div>
     </div>
@@ -22,11 +22,11 @@
 <div class="container">
     <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-            <?php for ($i = 0; $i < 4; $i++) : ?>
-                <div class="carousel-item active">
-                    <img src="public/assets/images/banner.png" class="d-block w-100" style="border-radius: 25px;max-height: 23vh !important;" alt="...">
+            <?php foreach ($images as $posit => $img) : ?>
+                <div class="carousel-item <?= ($posit == 1) ? 'active' : '' ?> ">
+                    <img src="https://admin.printbizz.in/writable/<?= $img ?>" class="d-block w-100" style="border-radius: 25px;max-height: 23vh !important;" alt="...">
                 </div>
-            <?php endfor ?>
+            <?php endforeach ?>
         </div>
     </div>
 </div>
@@ -148,7 +148,7 @@
         modal_body += '<div class="card-body">';
         modal_body += '<h5 class="card-title fw-bold" style="font-size:0.9rem;">Upload your file</h5>';
         modal_body += '<div class="mt-3 mb-0">';
-        modal_body += '<input class="form-control" type="file" id="formFileMultiple" name="print_file[]" style="border-radius: 14px;" multiple required>';
+        modal_body += '<input class="form-control" type="file" id="formFileMultiple" max-file-size="50" name="print_file[]" style="border-radius: 14px;" multiple required>';
         modal_body += '<small>Ext allowed : pdf, jpg, png, jpeg, webp</small>';
         modal_body += '</div>';
         modal_body += '</div>';
@@ -172,6 +172,18 @@
         modal_body += '</form>';
         $('#product_modal_body').html(modal_body);
         $('#productModal').modal('show');
+        const uploadField = document.getElementById("formFileMultiple");
+        uploadField.onchange = function() {
+            if (this.files[0].size > 10 * 1048576) {
+                uploadField.nextSibling.textContent = 'File size exceeds the limit';
+                $('#formFileMultiple').addClass('border border-danger');
+                setTimeout(() => {
+                    uploadField.nextSibling.textContent = 'Ext allowed : pdf, jpg, png, jpeg, webp';
+                    $('#formFileMultiple').removeClass('border border-danger');
+                }, 2000);
+                this.value = "";
+            }
+        };
     }
 
     function modal_product_submit(element) {

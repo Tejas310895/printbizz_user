@@ -1,7 +1,7 @@
 <div class="container bg-white shadow fixed-top py-2">
     <div class="row">
         <div class="col-2">
-            <a href="<?=base_url()?>" class="btn btn-transparent" type="button">
+            <a href="<?= base_url() ?>" class="btn btn-transparent" type="button">
                 <i class="fa-solid fa-arrow-left fa-xl" style="color: #747474;"></i>
             </a>
         </div>
@@ -27,10 +27,10 @@
                     <div class="col-7 pt-3 ps-0">
                         <h6><?= auth()->user()->getEmailIdentity()->name ?></h6>
                         <h6 class="mb-0 text-black-50">+91 <?= auth()->user()->email ?></h6>
-                        <h6 class="mb-0 text-black-50"></h6>
+                        <h6 class="mb-0 text-black-50"><?= auth()->user()->getEmailIdentity()->email ?></h6>
                     </div>
                     <div class="col-1 text-start">
-                        <button class="btn btn-transparent ps-0 pe-4" style="display: contents;" type="button">
+                        <button class="btn btn-transparent ps-0 pe-4" style="display: contents;" type="button" data-bs-toggle="modal" data-bs-target="#profile_edit">
                             <i class="fa-solid fa-pencil fa-sm"></i>
                         </button>
                     </div>
@@ -219,7 +219,7 @@
     </div> -->
 </div>
 <!-- Modal -->
-<div class="modal fade" id="profile_add" tabindex="-1" aria-labelledby="profile_add" aria-hidden="true">
+<!-- <div class="modal fade" id="profile_add" tabindex="-1" aria-labelledby="profile_add" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="display: contents;">
         <div class="modal-content">
             <div class="modal-body text-center">
@@ -240,4 +240,46 @@
             </div>
         </div>
     </div>
+</div> -->
+<!-- Modal -->
+<div class="modal fade" id="profile_edit" tabindex="-1" aria-labelledby="profile_edit" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="display: contents;">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h6>Address Details Update</h6>
+                <?= form_open('') ?>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="name" placeholder="Enter Name" value="<?= auth()->user()->getEmailIdentity()->name ?>" style="border-radius:12px;" required>
+                </div>
+                <div class="mb-3">
+                    <input type="email" class="form-control" id="exampleFormControlInput1" name="email" placeholder="Enter Email" value="<?= auth()->user()->getEmailIdentity()->email ?>" style="border-radius:12px;">
+                </div>
+                <button type="submit" class="btn btn-block btn-lg w-100 text-light" style="background-color: #9F88FF;border-radius:15px;">Update Address</button>
+                <?= form_close() ?>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    $("form").submit(function(e) {
+        e.preventDefault();
+        var data = new FormData($(this)[0]);
+        data.append("edit_user", "");
+        $.ajax({
+            type: "post",
+            url: window.location.href,
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if (response == 1) {
+                    alert('Details Updated');
+                } else {
+                    alert('Update Failed');
+                }
+            }
+        });
+    });
+</script>

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\AppSettings;
 use App\Models\Products;
 use CodeIgniter\Cookie\Cookie;
 use CodeIgniter\Events\Events;
@@ -28,10 +29,30 @@ class MainController extends BaseController
         $this->orders = new \App\Models\Orders();
         $this->users = new UserModel();
         $this->userIdentities = new UserIdentityModel;
+        $this->appsettings = new AppSettings();
     }
     public function index()
     {
         $postdata = $this->request->getPost();
+
+        $email = service('email');
+
+        $email->setFrom('help@printbizz.in', 'Printbizz');
+        $email->setTo('tshirsat700@gmail.com');
+        // $email->setCC('another@another-example.com');
+        // $email->setBCC('them@their-example.com');
+
+        $email->setSubject('Email Test');
+        $email->setMessage('Testing the email class.');
+
+        if (!$email->send()) {
+            echo "<pre>";
+            print_r($email->printDebugger());
+            die;
+        } else {
+            echo "done";
+        }
+        die;
 
         $inv_cookies = new Cookie('inventory');
         $products = $this->products->where('status', Products::STATUS_ACTIVE)->findAll();
@@ -57,7 +78,8 @@ class MainController extends BaseController
             }
         }
         $data['products'] = $products;
-
+        $banners = array_shift($this->appsettings->where('name', 'images')->findAll());
+        $data['images'] = json_decode($banners['parameters'], true);
         //Post request data is processed here
         if (!empty($postdata)) {
             $pages = 0;
@@ -109,8 +131,8 @@ class MainController extends BaseController
                 $carry[$val['id']] = $val;
                 return $carry;
             });
-            $itemnary_group = $this->itemnary_group->Where('status', Products::STATUS_ACTIVE)->findAll();
-            $itemnary = $this->itemnary->Where('status', Products::STATUS_ACTIVE)->findAll();
+            $itemnary_group = $this->itemnary_group->findAll();
+            $itemnary = $this->itemnary->findAll();
             $itemnary = array_reduce($itemnary, function ($carry, $val) {
                 $carry[$val['item_group_id']][$val['id']] = $val;
                 return $carry;
@@ -132,6 +154,11 @@ class MainController extends BaseController
             $data['products'] = [];
             $data['cookies'] = [];
         }
+        $app_settings = array_shift($this->appsettings->select('parameters')->where('name', 'charges')->find());
+        $app_settings = json_decode($app_settings['parameters'], true);
+        $data['gst'] = $app_settings['gst'];
+        $data['del_charges'] = $app_settings['del_charge'];
+        $data['limit'] = $app_settings['limit'];
         $data['institutes'] = $this->institutes->findAll();
         //Post request data is processed here
         if (!empty($postdata)) {
@@ -184,10 +211,26 @@ class MainController extends BaseController
     }
     public function profile()
     {
+        $postdata = $this->request->getPost();
         if (auth()->user()) {
             $data['orders'] = $this->orders->where('user_id', auth()->user()->id)->findAll();
         } else {
             $data['order'] = [];
+        }
+        if (!empty($postdata)) {
+            if (isset($postdata['edit_user'])) {
+                try {
+                    unset($postdata['edit_user']);
+                    if ($this->userIdentities->set($postdata)->where('user_id', auth()->user()->id)->update()) {
+                        $valid = 1;
+                    } else {
+                        $valid = 0;
+                    }
+                    return $this->response->setJSON($valid);
+                } catch (\Throwable $th) {
+                    echo $th;
+                }
+            }
         }
         return $this->render_page('profile.php', $data);
     }
@@ -377,14 +420,15 @@ class MainController extends BaseController
         return $this->render_page('order_summary.php', $data);
     }
 
-    public function documents($name){
-        if($name == 'about_us'){
-            return $this->render_page('docs/about_us.php',['name' => $name]);
-        }elseif($name == 'privacy_policy'){
-            return $this->render_page('docs/privacy_policy.php',['name' => $name]);
-        }elseif($name == 'terms_conditions'){
-            return $this->render_page('docs/terms_conditions.php',['name' => $name]);
-        }else{
+    public function documents($name)
+    {
+        if ($name == 'about_us') {
+            return $this->render_page('docs/about_us.php', ['name' => $name]);
+        } elseif ($name == 'privacy_policy') {
+            return $this->render_page('docs/privacy_policy.php', ['name' => $name]);
+        } elseif ($name == 'terms_conditions') {
+            return $this->render_page('docs/terms_conditions.php', ['name' => $name]);
+        } else {
             return redirect()->to('/');
         }
     }

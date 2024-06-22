@@ -23,14 +23,14 @@ use App\Models\ProductItemnaryGroup;
 
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
         <div class="card-body">
-            <h5 class="card-title fw-bold mb-2" style="font-size:0.9rem;">Apply Coupons</h5>
+            <h5 class="card-title fw-bold mb-2" style="font-size:0.9rem;">Use Coupons</h5>
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <?php for ($i = 0; $i < 8; $i++) : ?>
                         <div class="swiper-slide">
                             <div class="row">
                                 <div class="col-8 pe-0">
-                                    <div class="card cou_left bg-danger" style="height:55px;">
+                                    <div class="card cou_left" style="height:55px; background:#ff4d5e;">
                                         <div class="card-body text-white px-2 py-1 text-center" style="display: flex;flex-direction: column;">
                                             <h5 class="card-title mb-0 mt-1 fw-bolder"> 10% OFF</h5>
                                             <small style="font-size: 0.7rem;">Order above 200</small>
@@ -38,7 +38,7 @@ use App\Models\ProductItemnaryGroup;
                                     </div>
                                 </div>
                                 <div class="col-4 ps-0">
-                                    <div class="card cou_right bg-danger" style="height:55px;">
+                                    <div class="card cou_right" style="height:55px;background:#ff4d5e;">
                                         <div class="card-body px-0 pt-2">
                                             <button type="button" class="btn btn-transparent btn-sm btn btn-trans btn-sm p-0 text-white fw-bold" style="font-size: 0.8rem;line-height: normal;">Apply Now</button>
                                         </div>
@@ -207,9 +207,13 @@ use App\Models\ProductItemnaryGroup;
                     var price = parseInt(cproduct.default_price);
                     var items_added = [];
                     $.each(cv.itemnary_single, function(isi, isv) {
+                        sitem = cproduct['group'][JSON.parse(isv).g_id]['items'][JSON.parse(isv).i_id];
+                        items_added.push(sitem.name);
                         price += parseInt(JSON.parse(isv).price);
                     });
                     $.each(cv.itemnary_multi, function(imi, imv) {
+                        mitem = cproduct['group'][JSON.parse(imv).g_id]['items'][JSON.parse(imv).i_id];
+                        items_added.push(mitem.name);
                         price += parseInt(JSON.parse(imv).price);
                     });
                     item_tot = parseInt(price) * (parseInt(cv['copies']) * parseInt(cv['pages']));
@@ -241,8 +245,8 @@ use App\Models\ProductItemnaryGroup;
 
                     cart_item_tot += item_tot;
                 });
-                var gst = parseFloat((cart_item_tot * 0.05).toFixed(2));
-                var del_charges = 30;
+                var gst = parseFloat((cart_item_tot * <?=($gst/100)?>).toFixed(2));
+                var del_charges = <?=($del_charges)?>;
                 var grand_total = cart_item_tot + gst + del_charges;
                 billing_template += '<h6 class="mb-1 fs-6 text-secondary fw-bold mb-3">Bill Summary</h6>';
                 billing_template += '<div class="row border border-top-0 border-start-0 border-end-0">';
@@ -337,11 +341,20 @@ use App\Models\ProductItemnaryGroup;
                             is_checked = 'checked';
                         }
                     });
-                    modal_body += '<li class="list-group-item border-0 pb-0">';
-                    modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                    modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
-                    modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
-                    modal_body += '</li>';
+                    if (is_checked = 'checked') {
+                        modal_body += '<li class="list-group-item border-0 pb-0">';
+                        modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
+                        modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
+                        modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
+                        modal_body += '</li>';
+                    }
+                    if (gv.status == 1 && tv.status == 1) {
+                        modal_body += '<li class="list-group-item border-0 pb-0">';
+                        modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
+                        modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
+                        modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
+                        modal_body += '</li>';
+                    }
                 });
             } else if (gv.type == <?= ProductItemnaryGroup::TYPE_MULTI_SELECT ?>) {
                 $.each(gv.items, function(ti, tv) {
@@ -356,11 +369,21 @@ use App\Models\ProductItemnaryGroup;
                             is_checked = 'checked';
                         }
                     });
-                    modal_body += '<li class="list-group-item border-0 pb-0">';
-                    modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                    modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
-                    modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
-                    modal_body += '</li>';
+                    if (is_checked = 'checked') {
+                        modal_body += '<li class="list-group-item border-0 pb-0">';
+                        modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
+                        modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
+                        modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
+                        modal_body += '</li>';
+                    } 
+                     
+                    if (gv.status == 1 && tv.status == 1) {
+                        modal_body += '<li class="list-group-item border-0 pb-0">';
+                        modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
+                        modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
+                        modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
+                        modal_body += '</li>';
+                    }
                 });
             }
             modal_body += '</ul>';
@@ -394,6 +417,18 @@ use App\Models\ProductItemnaryGroup;
         modal_body += '</form>';
         $('#product_modal_body').html(modal_body);
         $('#productModal').modal('show');
+        const uploadField = document.getElementById("formFileMultiple");
+        uploadField.onchange = function() {
+            if (this.files[0].size > 10 * 1048576) {
+                uploadField.nextSibling.textContent = 'File size exceeds the limit';
+                $('#formFileMultiple').addClass('border border-danger');
+                setTimeout(() => {
+                    uploadField.nextSibling.textContent = 'Ext allowed : pdf, jpg, png, jpeg, webp';
+                    $('#formFileMultiple').removeClass('border border-danger');
+                }, 2000);
+                this.value = "";
+            }
+        };
     }
 
     function modal_product_submit(element, index) {

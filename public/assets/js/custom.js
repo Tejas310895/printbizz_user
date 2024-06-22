@@ -134,7 +134,13 @@ function login_call() {
                                             url: "otp_verification",
                                             data: { 'otp': otp_str, 'mobile_number': response.postdata.mobile_number },
                                             success: function (response) {
-                                                if (response.valid == 1) {
+                                                if (response.valid != 1) {
+                                                    $('.otp-letter-input').val('');
+                                                    Swal.showValidationMessage(`Invalid OTP`);
+                                                    $(".swal2-validation-message").css('font-size', 'small');
+                                                    $(".swal2-validation-message").css('margin-top', '0');
+                                                    $(".swal2-validation-message").css('background-color', 'transparent');
+                                                } else {
                                                     if (response.name == 0) {
                                                         (async () => {
                                                             const { value: full_name } = await Swal.fire({
@@ -237,17 +243,17 @@ function login_call() {
                                                             showConfirmButton: false,
                                                             showClass: {
                                                                 popup: `
-                                                  animate__animated
-                                                  animate__fadeInUp
-                                                  --animate-duration: 1s;
-                                                `
+                                                          animate__animated
+                                                          animate__fadeInUp
+                                                          --animate-duration: 1s;
+                                                        `
                                                             },
                                                             hideClass: {
                                                                 popup: `
-                                                  animate__animated
-                                                  animate__fadeOutDown
-                                                  --animate-duration: 1s;
-                                                `
+                                                          animate__animated
+                                                          animate__fadeOutDown
+                                                          --animate-duration: 1s;
+                                                        `
                                                             },
                                                             timer: 2000
                                                         });
@@ -261,17 +267,14 @@ function login_call() {
                                                     $(".swal2-html-container").addClass('mx-3 mt-2');
                                                     $(".swal2-styled").addClass('btn btn-block btn-lg');
                                                     $(".swal2-actions").css('flex-direction', 'row-reverse');
-                                                    // setTimeout(() => {
-                                                    //     window.location.reload();
-                                                    // }, 2500);
+                                                    setTimeout(() => {
+                                                        window.location.reload();
+                                                    }, 2500);
                                                 }
                                             }
                                         });
                                         $('.otp-letter-input').val('');
-                                        Swal.showValidationMessage(`Invalid OTP`);
-                                        $(".swal2-validation-message").css('font-size', 'small');
-                                        $(".swal2-validation-message").css('margin-top', '0');
-                                        $(".swal2-validation-message").css('background-color', 'transparent');
+                                        Swal.showValidationMessage();
                                     } else {
                                         Swal.showValidationMessage(`Invalid OTP`);
                                         $(".swal2-validation-message").css('font-size', 'small');
