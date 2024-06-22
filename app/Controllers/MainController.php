@@ -35,25 +35,6 @@ class MainController extends BaseController
     {
         $postdata = $this->request->getPost();
 
-        $email = service('email');
-
-        $email->setFrom('help@printbizz.in', 'Printbizz');
-        $email->setTo('tshirsat700@gmail.com');
-        // $email->setCC('another@another-example.com');
-        // $email->setBCC('them@their-example.com');
-
-        $email->setSubject('Email Test');
-        $email->setMessage('Testing the email class.');
-
-        if (!$email->send()) {
-            echo "<pre>";
-            print_r($email->printDebugger());
-            die;
-        } else {
-            echo "done";
-        }
-        die;
-
         $inv_cookies = new Cookie('inventory');
         $products = $this->products->where('status', Products::STATUS_ACTIVE)->findAll();
         $products = array_reduce($products, function ($carry, $val) {
