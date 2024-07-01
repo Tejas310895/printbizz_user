@@ -323,7 +323,7 @@ class MainController extends BaseController
                     $file = new \CodeIgniter\Files\File(WRITEPATH . $file);
                     $cfile = new \CURLFile($file->getFileInfo()->getPathname(), $file->getMimeType(), $file->getFilename());
                     $client->setHeader('Content-Type', 'multipart/form-data');
-                    $response = $client->request("POST", 'http://localhost/printslug/admin/add_image', [
+                    $response = $client->request("POST", \Config\Params::$admin_api, [
                         'multipart' => [
                             'folder' => $file->getPathInfo()->getFilename(),
                             'name' => $cfile

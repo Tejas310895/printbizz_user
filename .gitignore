@@ -127,5 +127,6 @@ nb-configuration.xml
 /.phpunit.*.cache
 app/config/App.php
 app/config/Database.php
+app/config/Params.php
 composer.phar
 app/config/boot/production.php
