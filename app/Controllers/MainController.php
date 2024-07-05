@@ -52,14 +52,18 @@ class MainController extends BaseController
             return $carry;
         });
         $itemnary_group = array_reduce($itemnary_group, function ($carry, $val) use ($itemnary) {
-            $val['items'] = $itemnary[$val['id']];
-            $carry[$val['id']] = $val;
-            return $carry;
+            if (isset($itemnary[$val['id']])) {
+                $val['items'] = $itemnary[$val['id']];
+                $carry[$val['id']] = $val;
+                return $carry;
+            }
         });
 
         foreach ($products as $prod_id => $prod_values) {
             foreach (json_decode($prod_values['itemnary']) as $items) {
-                $products[$prod_id]['group'][$items] = $itemnary_group[$items];
+                if (isset($itemnary_group[$items])) {
+                    $products[$prod_id]['group'][$items] = $itemnary_group[$items];
+                }
             }
         }
         $data['products'] = $products;
@@ -116,19 +120,18 @@ class MainController extends BaseController
                 $carry[$val['id']] = $val;
                 return $carry;
             });
-            $itemnary_group = $this->itemnary_group->where('status', ProductItemnaryGroup::STATUS_ACTIVE)->findAll();
-            $itemnary = $this->itemnary->where('status', ProductItemnary::STATUS_ACTIVE)->findAll();
+            $itemnary_group = $this->itemnary_group->findAll();
+            $itemnary = $this->itemnary->findAll();
             $itemnary = array_reduce($itemnary, function ($carry, $val) {
                 $carry[$val['item_group_id']][$val['id']] = $val;
                 return $carry;
             });
             $itemnary_group = array_reduce($itemnary_group, function ($carry, $val) use ($itemnary) {
                 $val['items'] = $itemnary[$val['id']];
-                
+
                 $carry[$val['id']] = $val;
                 return $carry;
             });
-
             foreach ($products as $prod_id => $prod_values) {
                 foreach (json_decode($prod_values['itemnary']) as $items) {
                     $products[$prod_id]['group'][$items] = $itemnary_group[$items];
@@ -140,6 +143,9 @@ class MainController extends BaseController
             $data['products'] = [];
             $data['cookies'] = [];
         }
+        // echo "<pre>";
+        // print_r($data);
+        // die;
         $app_settings = array_shift($this->appsettings->select('parameters')->where('name', 'charges')->find());
         $app_settings = json_decode($app_settings['parameters'], true);
         $data['gst'] = $app_settings['gst'];

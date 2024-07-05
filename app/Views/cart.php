@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ProductItemnary;
 use App\Models\ProductItemnaryGroup;
 use Config\Params;
 
@@ -208,6 +209,23 @@ use Config\Params;
                     var cproduct = db_products[cv.product_id];
                     var price = parseInt(cproduct.default_price);
                     var items_added = [];
+                    var is_eligible = 1;
+                    $.each(cv.itemnary_single, function(igs, vgs) {
+                        var grps = JSON.parse(vgs);
+                        var cgrps = cproduct.group[grps.g_id];
+                        var citem = cproduct.group[grps.g_id].items[grps.i_id];
+                        if (cgrps.status == <?= ProductItemnaryGroup::STATUS_INACTIVE ?> || citem.status == <?= ProductItemnary::STATUS_INACTIVE ?>) {
+                            is_eligible = 0;
+                        }
+                    });
+                    $.each(cv.itemnary_multi, function(igm, vgm) {
+                        var grps = JSON.parse(vgm);
+                        var cgrps = cproduct.group[grps.g_id];
+                        var citem = cproduct.group[grps.g_id].items[grps.i_id];
+                        if (cgrps.status == <?= ProductItemnaryGroup::STATUS_INACTIVE ?> || citem.status == <?= ProductItemnary::STATUS_INACTIVE ?>) {
+                            is_eligible = 0;
+                        }
+                    });
                     $.each(cv.itemnary_single, function(isi, isv) {
                         sitem = cproduct['group'][JSON.parse(isv).g_id]['items'][JSON.parse(isv).i_id];
                         items_added.push(sitem.name);
@@ -232,17 +250,28 @@ use Config\Params;
                     itemnary_template += '<li class="breadcrumb-item" aria-current="page"><i class="fa-regular fa-newspaper"></i> <small class=" fw-lighter mt-1">' + cv['pages'] + ' Pages</small></li>';
                     itemnary_template += '</ol>';
                     itemnary_template += '</nav>';
-                    itemnary_template += '<h6 class="fw-bold mb-1 text-truncate" style="font-size: 10px;max-width: 150px;">' + items_added.join(',') + '</h6>';
-                    itemnary_template += '<button type="button" class="btn btn-transparent btn-sm py-0 ps-0 fw-bold" style="color:#9F88FF;" onclick="product_modal($(this),' + ci + ')">Customize <i class="fa-solid fa-chevron-right fa-xs"></i></button>';
+                    if (is_eligible) {
+                        itemnary_template += '<h6 class="fw-bold mb-1 text-truncate" style="font-size: 10px;max-width: 150px;">' + items_added.join(',') + '</h6>';
+                        itemnary_template += '<button type="button" class="btn btn-transparent btn-sm py-0 ps-0 fw-bold" style="color:#9F88FF;" onclick="product_modal($(this),' + ci + ')">Customize <i class="fa-solid fa-chevron-right fa-xs"></i></button>';
+                    } else {
+                        itemnary_template += '<h6 class="fw-bold mb-1 ps-2 text-danger" style="font-size: 10px;">Requested Configrations are unavailable try to add item with new configrations</h6>';
+                    }
                     itemnary_template += '</div>';
-                    itemnary_template += '<div class="col-3 px-0">';
-                    itemnary_template += '<div class="input-group border border-1 border" style="border-radius:10px;width: 85% !important;">';
-                    itemnary_template += '<button class="btn btn-transparent px-2" type="button" onclick="decrement_copy($(this),' + ci + ');">' + ((cv['copies'] > 1) ? '<i class="fa fa-minus text-dark"></i>' : '<i class="fa-solid fa-trash-can"></i>') + '</button>';
-                    itemnary_template += '<input type="text" name="item_qty" class="form-control shadow-none bg-transparent border-0 text-center px-0" value="' + cv['copies'] + '" readonly>';
-                    itemnary_template += '<button class="btn btn-transparent px-2" type="button" onclick="increment_copy($(this),' + ci + ');"><i class="fa fa-plus text-dark"></i></button>';
-                    itemnary_template += '</div>';
-                    itemnary_template += '<h6 class="text-end pe-3 mt-2 fw-bold mb-0">₹ ' + item_tot + '</h6>';
-                    itemnary_template += '</div>';
+                    if (is_eligible) {
+                        itemnary_template += '<div class="col-3 px-0">';
+                        itemnary_template += '<div class="input-group border border-1 border" style="border-radius:10px;width: 85% !important;">';
+                        itemnary_template += '<button class="btn btn-transparent px-2" type="button" onclick="decrement_copy($(this),' + ci + ');">' + ((cv['copies'] > 1) ? '<i class="fa fa-minus text-dark"></i>' : '<i class="fa-solid fa-trash-can"></i>') + '</button>';
+                        itemnary_template += '<input type="text" name="item_qty" class="form-control shadow-none bg-transparent border-0 text-center px-0" value="' + cv['copies'] + '" readonly>';
+                        itemnary_template += '<button class="btn btn-transparent px-2" type="button" onclick="increment_copy($(this),' + ci + ');"><i class="fa fa-plus text-dark"></i></button>';
+                        itemnary_template += '</div>';
+                        itemnary_template += '<h6 class="text-end pe-3 mt-2 fw-bold mb-0">₹ ' + item_tot + '</h6>';
+                        itemnary_template += '</div>';
+                    } else {
+                        itemnary_template += '<div class="col-3 pr-3 pt-3 text-end">';
+                        itemnary_template += '<button class="btn btn-transparent px-2" type="button" onclick="decrement_copy($(this),' + ci + ');">' + ((cv['copies'] > 1) ? '<i class="fa fa-minus text-dark"></i>' : '<i class="fa-solid fa-trash-can"></i>') + '</button>';
+                        itemnary_template += '<input type="hidden" name="item_qty" class="form-control shadow-none bg-transparent border-0 text-center px-0" value="1" readonly>';
+                        itemnary_template += '</div>';
+                    }
                     itemnary_template += '</div>';
 
                     cart_item_tot += item_tot;
@@ -343,13 +372,13 @@ use Config\Params;
                             is_checked = 'checked';
                         }
                     });
-                    if (is_checked = 'checked') {
-                        modal_body += '<li class="list-group-item border-0 pb-0">';
-                        modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                        modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
-                        modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
-                        modal_body += '</li>';
-                    }
+                    // if (is_checked = 'checked') {
+                    //     modal_body += '<li class="list-group-item border-0 pb-0">';
+                    //     modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
+                    //     modal_body += '<label class="form-check-label" for="secondRadio">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
+                    //     modal_body += "<input class='form-check-input me-1 float-end' type='radio' name='itemnary_single[]' value='" + item_value + "' " + is_checked + " required>";
+                    //     modal_body += '</li>';
+                    // }
                     if (gv.status == 1 && tv.status == 1) {
                         modal_body += '<li class="list-group-item border-0 pb-0">';
                         modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
@@ -371,13 +400,13 @@ use Config\Params;
                             is_checked = 'checked';
                         }
                     });
-                    if (is_checked = 'checked') {
-                        modal_body += '<li class="list-group-item border-0 pb-0">';
-                        modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
-                        modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
-                        modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
-                        modal_body += '</li>';
-                    }
+                    // if (is_checked = 'checked') {
+                    //     modal_body += '<li class="list-group-item border-0 pb-0">';
+                    //     modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';
+                    //     modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
+                    //     modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
+                    //     modal_body += '</li>';
+                    // }
 
                     if (gv.status == 1 && tv.status == 1) {
                         modal_body += '<li class="list-group-item border-0 pb-0">';
