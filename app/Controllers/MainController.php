@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\AppSettings;
+use App\Models\ProductItemnary;
+use App\Models\ProductItemnaryGroup;
 use App\Models\Products;
 use CodeIgniter\Cookie\Cookie;
 use CodeIgniter\Events\Events;
@@ -114,14 +116,15 @@ class MainController extends BaseController
                 $carry[$val['id']] = $val;
                 return $carry;
             });
-            $itemnary_group = $this->itemnary_group->findAll();
-            $itemnary = $this->itemnary->findAll();
+            $itemnary_group = $this->itemnary_group->where('status', ProductItemnaryGroup::STATUS_ACTIVE)->findAll();
+            $itemnary = $this->itemnary->where('status', ProductItemnary::STATUS_ACTIVE)->findAll();
             $itemnary = array_reduce($itemnary, function ($carry, $val) {
                 $carry[$val['item_group_id']][$val['id']] = $val;
                 return $carry;
             });
             $itemnary_group = array_reduce($itemnary_group, function ($carry, $val) use ($itemnary) {
                 $val['items'] = $itemnary[$val['id']];
+                
                 $carry[$val['id']] = $val;
                 return $carry;
             });

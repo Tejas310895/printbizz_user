@@ -6,6 +6,8 @@ use CodeIgniter\Model;
 
 class ProductItemnaryGroup extends Model
 {
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
     public const TYPE_SINGLE_SELECT = 1;
     public const TYPE_MULTI_SELECT = 2;
     protected $table      = 'products_itemnary_group';

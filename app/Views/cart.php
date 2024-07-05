@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\ProductItemnaryGroup;
+use Config\Params;
+
 ?>
 <div class="container bg-white shadow fixed-top py-2">
     <div class="row">
@@ -219,7 +221,7 @@ use App\Models\ProductItemnaryGroup;
                     item_tot = parseInt(price) * (parseInt(cv['copies']) * parseInt(cv['pages']));
                     itemnary_template += '<div class="row my-2">';
                     itemnary_template += '<div class="col-2">';
-                    itemnary_template += '<img src="https://admin.printbizz.in/writable/' + JSON.parse(cproduct['img'])[0] + '" class="d-block" style="border-radius: 8px;width:60px; height:60px;" alt="...">';
+                    itemnary_template += '<img src="<?= Params::$admin_img ?>' + JSON.parse(cproduct['img'])[0] + '" class="d-block" style="border-radius: 8px;width:60px; height:60px;" alt="...">';
                     itemnary_template += '</div>';
                     itemnary_template += '<div class="col-7 pr-0">';
                     itemnary_template += '<nav style="--bs-breadcrumb-divider: \'\';" aria-label="breadcrumb">';
@@ -245,8 +247,8 @@ use App\Models\ProductItemnaryGroup;
 
                     cart_item_tot += item_tot;
                 });
-                var gst = parseFloat((cart_item_tot * <?=($gst/100)?>).toFixed(2));
-                var del_charges = <?=($del_charges)?>;
+                var gst = parseFloat((cart_item_tot * <?= ($gst / 100) ?>).toFixed(2));
+                var del_charges = <?= ($del_charges) ?>;
                 var grand_total = cart_item_tot + gst + del_charges;
                 billing_template += '<h6 class="mb-1 fs-6 text-secondary fw-bold mb-3">Bill Summary</h6>';
                 billing_template += '<div class="row border border-top-0 border-start-0 border-end-0">';
@@ -314,7 +316,7 @@ use App\Models\ProductItemnaryGroup;
         modal_body += '<form onsubmit="modal_product_submit($(this),' + index_id + ');return false;" action="" method="post" enctype="multipart/form-data">';
         modal_body += '<div class="row px-4">';
         modal_body += '<div class="col-2 px-2 pt-2 pb-0">';
-        modal_body += '<img src="https://admin.printbizz.in/writable/' + JSON.parse(product_arr[prod_id].img)[0] + '" class="d-block" style="border-radius: 15px;width:50px; height:50px;" alt="...">';
+        modal_body += '<img src="<?= Params::$admin_img ?>' + JSON.parse(product_arr[prod_id].img)[0] + '" class="d-block" style="border-radius: 15px;width:50px; height:50px;" alt="...">';
         modal_body += '</div>';
         modal_body += '<div class="col-10 pt-3 pb-2 ps-0">';
         modal_body += '<h6 class="fw-bold mb-0"> ' + product_arr[prod_id].name + ' </h6>';
@@ -375,8 +377,8 @@ use App\Models\ProductItemnaryGroup;
                         modal_body += '<labelclass="form-check-label" for="flexCheckDefault">' + tv.name + ((tv.price > 0) ? ' + ₹' + tv.price : '') + '</label>';
                         modal_body += "<input class='form-check-input me-1 float-end' type='checkbox'n name='itemnary_multi[]' value='" + item_value + "'" + is_checked + ">";
                         modal_body += '</li>';
-                    } 
-                     
+                    }
+
                     if (gv.status == 1 && tv.status == 1) {
                         modal_body += '<li class="list-group-item border-0 pb-0">';
                         modal_body += '<i class="fa-solid fa-square fa-xl" style="color: #dbdbdb;"></i> ';

@@ -6,6 +6,8 @@ use CodeIgniter\Model;
 
 class ProductItemnary extends Model
 {
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
     protected $table      = 'products_itemnary';
     protected $primaryKey = 'id';
 
