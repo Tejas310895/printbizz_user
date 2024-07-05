@@ -4,6 +4,7 @@
             <?php
 
             use App\Models\ProductItemnaryGroup;
+            use Config\Params;
 
             echo img('public/assets/images/logo.jpg', false, ['class' => 'img-thumbnail border-0', 'style' => 'width:40%;']); ?>
         </div>
@@ -32,13 +33,17 @@
 </div>
 <h2 class="hr-lines mx-5 mt-3 mb-0" style="color:darkgray;font-size:small;">WE PRINT</h2>
 <div class="container-fluid px-4 pt-1 mb-3">
-    <div class="row">
+    <div class="row mt-4">
         <?php foreach ($products as $product) : ?>
-            <div class="col-4 g-3">
-                <div class="card border border-0 shadow-lg" style="border-radius:20px;">
-                    <img src="https://admin.printbizz.in/writable/<?= json_decode($product['img'], true)[0] ?>" class="card-img-top" style="border-radius:20px;" alt="...">
+            <div class="col-4 px-0">
+                <div class="card border border-0" onclick="product_modal($(this),<?= $product['id'] ?>)">
+                    <img src="<?= Params::$admin_img . json_decode($product['img'], true)[0] ?>" class="card-img-top px-4 w-75 mx-auto" alt="...">
                     <?= csrf_field('prod_csrf') ?>
-                    <button type="button" class="btn btn-light shadow w-100 py-1" style="border-radius:20px;position: absolute;bottom: -1px;" onclick="product_modal($(this),<?= $product['id'] ?>)">ADD</button>
+                    <div class="card-body py-2">
+                        <h5 class="card-title text-center" style="font-size: small;">
+                            <?= $product['name'] ?>
+                        </h5>
+                    </div>
                 </div>
             </div>
         <?php endforeach ?>
