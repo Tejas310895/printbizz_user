@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Orders;
+use Config\Params;
+
 ?>
 <div class="container bg-white shadow fixed-top py-2">
     <div class="row">
@@ -116,7 +118,7 @@ use App\Models\Orders;
             ?>
                 <div class="row my-2">
                     <div class="col-2">
-                        <img src="<?= json_decode($items['img'], true)[0] ?>" class="d-block" style="border-radius: 8px;width:60px; height:60px;" alt="...">
+                        <img src="<?= Params::$admin_img . json_decode($items['img'], true)[0] ?>" class="d-block" style="border-radius: 8px;width:60px; height:60px;" alt="...">
                     </div>
                     <div class="col-7 pr-0">
                         <nav style="--bs-breadcrumb-divider: \'\" aria-label="breadcrumb">
