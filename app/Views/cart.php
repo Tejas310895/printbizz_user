@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Coupon;
 use App\Models\ProductItemnary;
 use App\Models\ProductItemnaryGroup;
 use Config\Params;
@@ -25,33 +26,8 @@ use Config\Params;
     </div>
 
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
-        <div class="card-body">
-            <h5 class="card-title fw-bold mb-2" style="font-size:0.9rem;">Use Coupons</h5>
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <?php for ($i = 0; $i < 8; $i++) : ?>
-                        <div class="swiper-slide">
-                            <div class="row">
-                                <div class="col-8 pe-0">
-                                    <div class="card cou_left" style="height:55px; background:#ff4d5e;">
-                                        <div class="card-body text-white px-2 py-1 text-center" style="display: flex;flex-direction: column;">
-                                            <h5 class="card-title mb-0 mt-1 fw-bolder"> 10% OFF</h5>
-                                            <small style="font-size: 0.7rem;">Order above 200</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-4 ps-0">
-                                    <div class="card cou_right" style="height:55px;background:#ff4d5e;">
-                                        <div class="card-body px-0 pt-2">
-                                            <button type="button" class="btn btn-transparent btn-sm btn btn-trans btn-sm p-0 text-white fw-bold" style="font-size: 0.8rem;line-height: normal;">Apply Now</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endfor ?>
-                </div>
-            </div>
+        <div class="card-body" id="coupon_container">
+
         </div>
     </div>
     <div class="card mb-3 border border-0" style="border-radius: 15px;">
@@ -109,14 +85,25 @@ use Config\Params;
 </div>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 2,
-        spaceBetween: 30,
-        freeMode: true,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
+    let swiper;
+
+    function initSwiper() {
+        swiper = new Swiper(".mySwiper", {
+            slidesPerView: 2,
+            spaceBetween: 30,
+            freeMode: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+        });
+        $('.cou_left').corner("bite tr br 10px");
+        $('.cou_right').corner("bite tl bl 10px");
+    }
+
+    $(document).ready(function() {
+        load_itemnary();
+        initSwiper();
     });
 
     function increment_copy(element, index = null) {
@@ -165,6 +152,11 @@ use Config\Params;
         $('#address_details').css('border-color', '');
         var address = $('#address_details').val();
         var cookie_products = JSON.parse(getCookie('inventory'));
+        if (getCookie('discount_') && getCookie('discount_').length > 3) {
+            var cookie_discount = JSON.parse(getCookie('discount_'));
+        }else{
+            var cookie_discount = null;
+        }
         if (address != null) {
             element.html('<span role="status">Loading</span><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>');
             $.ajax({
@@ -176,12 +168,14 @@ use Config\Params;
                         'del_charges': $('.del_charges').data('del_charges')
                     },
                     'address': address,
-                    'itemnary': cookie_products
+                    'itemnary': cookie_products,
+                    'discount': cookie_discount
                 },
                 success: function(response) {
                     setTimeout(() => {
                         if (response.status == 1) {
                             setCookie('inventory', "", -1);
+                            setCookie('discount_', "", -1);
                             window.location.replace('order_success');
                         } else {
                             alert('Error occured! Try again');
@@ -200,7 +194,9 @@ use Config\Params;
     function load_itemnary() {
         var itemnary_template = '';
         var billing_template = '';
+        var coupon_template = '';
         var db_products = <?= json_encode($products) ?>;
+        var db_coupon = <?= json_encode($coupons) ?>;
         if (getCookie('inventory')) {
             var cookie_products = JSON.parse(getCookie('inventory'));
             var cart_item_tot = 0;
@@ -237,6 +233,7 @@ use Config\Params;
                         price += parseInt(JSON.parse(imv).price);
                     });
                     item_tot = parseInt(price) * (parseInt(cv['copies']) * parseInt(cv['pages']));
+
                     itemnary_template += '<div class="row my-2">';
                     itemnary_template += '<div class="col-2">';
                     itemnary_template += '<img src="<?= Params::$admin_img ?>' + JSON.parse(cproduct['img'])[0] + '" class="d-block" style="border-radius: 8px;width:60px; height:60px;" alt="...">';
@@ -276,6 +273,69 @@ use Config\Params;
 
                     cart_item_tot += item_tot;
                 });
+
+                var discount_price = 0;
+                if (getCookie('discount_') && getCookie('discount_').length > 3) {
+                    var discount_check = JSON.parse(getCookie('discount_'));
+                    if (cart_item_tot < discount_check.minimum_order) {
+                        setCookie('discount_', "", -1);
+                        load_itemnary();
+                    }
+                }
+                if (getCookie('discount_') && getCookie('discount_').length > 3) {
+                    var discount_ = JSON.parse(getCookie('discount_'));
+                    if (discount_.type == <?= Coupon::TYPE_PERCENT ?>) {
+                        discount_price = cart_item_tot * (discount_.discount_price / 100);
+                    } else {
+                        discount_price = discount_.discount_price;
+                    }
+                    if (discount_price > discount_.upto_limit) {
+                        discount_price = discount_.upto_limit;
+                    }
+                    coupon_template += '<div class="row">';
+                    coupon_template += '<div class="col-2">';
+                    coupon_template += '<h5 class="card-title fw-bold pt-2" style="font-size:0.9rem;"><i class="fa-solid fa-ticket fa-2xl" style="color: #63E6BE;"></i></h5>';
+                    coupon_template += '</div>';
+                    coupon_template += '<div class="col-6 pt-2">';
+                    coupon_template += '<h5 class="card-title fw-bold mb-1 text-uppercase" style="font-size:1rem;">' + discount_.name + ' applied</h5>';
+                    coupon_template += '<h5 class="card-title fw-bold mb-2 text-secondary" style="font-size:1rem;">₹' + discount_price + ' saved!</h5>';
+                    coupon_template += '</div>';
+                    coupon_template += '<div class="col-4 pt-2">';
+                    coupon_template += '<h5 class="card-title fw-bold text-danger" style="font-size:0.9rem;" onclick="delete_coupon()"><i class="fa-solid fa-trash-can fa-lg float-end"></i></h5>';
+                    coupon_template += '</div>';
+                    coupon_template += '</div>';
+                    $('#discount_applied_modal').text('₹' + discount_price);
+                } else {
+                    coupon_template += '<h5 class="card-title fw-bold mb-2" style="font-size:0.9rem;">Use Coupons</h5>';
+                    coupon_template += '<div class="swiper mySwiper">';
+                    coupon_template += '<div class="swiper-wrapper">';
+                    $.each(db_coupon, function(dci, dcv) {
+                        if (cart_item_tot > dcv.minimum_order) {
+                            coupon_template += '<div class="swiper-slide">';
+                            coupon_template += '<div class="row">';
+                            coupon_template += '<div class="col-8 pe-0">';
+                            coupon_template += '<div class="card cou_left" style="height:55px; background:#ff4d5e;">';
+                            coupon_template += '<div class="card-body text-white px-2 py-1 text-center" style="display: flex;flex-direction: column;">';
+                            coupon_template += '<h5 class="card-title mb-0 mt-1 fw-bolder"> ' + (dcv.type == <?= Coupon::TYPE_AMOUNT ?> ? "₹ " : "") + dcv.discount_price + (dcv.type == <?= Coupon::TYPE_PERCENT ?> ? "%" : "") + ' OFF</h5>';
+                            coupon_template += '<small style="font-size: 0.7rem;">Order above ' + dcv.minimum_order + '</small>';
+                            coupon_template += '</div>';
+                            coupon_template += '</div>';
+                            coupon_template += '</div>';
+                            coupon_template += '<div class="col-4 ps-0">';
+                            coupon_template += '<div class="card cou_right" style="height:55px;background:#ff4d5e;padding:4px;">';
+                            coupon_template += '<div class="card-body px-0 pt-2">';
+                            coupon_template += '<button type="button" class="btn btn-transparent btn-sm btn btn-trans btn-sm p-0 text-white fw-bold" style="font-size: 0.8rem;line-height: normal;" data-body = \'' + JSON.stringify(dcv) + '\'  onclick="apply_discount($(this))">Apply Now</button>';
+                            coupon_template += '</div>';
+                            coupon_template += '</div>';
+                            coupon_template += '</div>';
+                            coupon_template += '</div>';
+                            coupon_template += '</div>';
+                        }
+                    });
+                    coupon_template += '</div>';
+                    coupon_template += '</div>';
+                }
+
                 var gst = parseFloat((cart_item_tot * <?= ($gst / 100) ?>).toFixed(2));
                 var del_charges = <?= ($del_charges) ?>;
                 var grand_total = cart_item_tot + gst + del_charges;
@@ -285,7 +345,7 @@ use Config\Params;
                 billing_template += '<h6 class="fw-bold" style="font-size:1rem;">Item Total</h6>';
                 billing_template += '</div>';
                 billing_template += '<div class="col-4 text-end">';
-                billing_template += '<h6 class="fw-bold" style="font-size:1rem;">₹ ' + cart_item_tot + '</h6>';
+                billing_template += '<h6 class="fw-bold" style="font-size:1rem;" id="cart_tot" data-price_total="' + cart_item_tot + '">₹ ' + cart_item_tot + '</h6>';
                 billing_template += '</div>';
                 billing_template += '</div>';
                 billing_template += '<div class="row pt-2">';
@@ -304,17 +364,29 @@ use Config\Params;
                 billing_template += '<h6 class="fw-light del_charges" style="font-size:0.9rem;" data-del_charges="' + del_charges + '">₹ ' + del_charges + '</h6>';
                 billing_template += '</div>';
                 billing_template += '</div>';
-                billing_template += '<div class="row border border-bottom-0 border-start-0 border-end-0 pt-3">';
+                if (discount_price > 0) {
+                    billing_template += '<div class="row">';
+                    billing_template += '<div class="col-8">';
+                    billing_template += '<h6 class="fw-light text-danger fw-bold" style="font-size:0.9rem;">Discount applied</h6>';
+                    billing_template += '</div>';
+                    billing_template += '<div class="col-4 text-end">';
+                    billing_template += '<h6 class="fw-light text-danger fw-bold" style="font-size:0.9rem;">₹ ' + discount_price + '</h6>';
+                    billing_template += '</div>';
+                    billing_template += '</div>';
+                }
+                billing_template += '<div class="row border border-1 border-bottom-0 border-start-0 border-end-0 pt-3">';
                 billing_template += '<div class="col-8">';
                 billing_template += '<h6 class="fw-bold fs-6">Grand Total</h6>';
                 billing_template += '</div>';
                 billing_template += '<div class="col-4 text-end">';
-                billing_template += '<h6 class="fw-bold fs-6">₹ ' + (grand_total).toFixed(2) + '</h6>';
+                billing_template += '<h6 class="fw-bold fs-6">₹ ' + (grand_total - discount_price).toFixed(2) + '</h6>';
                 billing_template += '</div>';
                 billing_template += '</div>';
 
                 $('#itemnary_container').html(itemnary_template);
                 $('#billing_container').html(billing_template);
+                $('#coupon_container').html(coupon_template);
+                initSwiper();
             }
         } else {
             itemnary_template += '<div class="card border border-0">';
@@ -330,12 +402,6 @@ use Config\Params;
             $('#order_checkout').remove();
         }
     }
-
-    $(document).ready(function() {
-        load_itemnary();
-        $('.cou_left').corner("bite tr br 10px");
-        $('.cou_right').corner("bite tl bl 10px");
-    });
 
     function product_modal(element, index_id) {
         var modal_body = '';
@@ -509,4 +575,38 @@ use Config\Params;
             });
         }
     }
+
+    function apply_discount(element) {
+        setCookie('discount_', JSON.stringify(element.data('body')), 7);
+        setTimeout(() => {
+            $('#coupon_modal').modal('show');
+        }, 500);
+        load_itemnary();
+    }
+
+    function delete_coupon() {
+        setCookie('discount_', "", -1);
+        load_itemnary();
+    }
 </script>
+
+<div class="modal fade" tabindex="-1" id='coupon_modal'>
+    <div class="modal-dialog modal-dialog-centered mx-auto w-100">
+        <div class="modal-content" style="border-radius:15px;">
+            <div class="card text-center" style="border-radius:15px;">
+                <div class="card-body" style="background: url('https://i.gifer.com/6SSp.gif');background-position: center;">
+                    <h5>
+                        <svg xmlns=" http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="50" height="50" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs">
+                            <g transform="matrix(1,0,0,1,0,0)">
+                                <path d="M24,12c0-1.626-.714-3.16-1.925-4.124,.14-1.622-.44-3.211-1.59-4.362-1.15-1.149-2.735-1.731-4.277-1.555-2.014-2.556-6.365-2.604-8.332-.035C4.643,1.54,1.534,4.584,1.96,7.792c-2.556,2.014-2.605,6.365-.035,8.333-.14,1.622,.44,3.211,1.59,4.362,1.15,1.149,2.737,1.731,4.277,1.555,2.014,2.556,6.365,2.604,8.332,.035,1.62,.139,3.21-.439,4.361-1.59,1.149-1.15,1.729-2.74,1.555-4.277,1.246-1.048,1.96-2.582,1.96-4.208Zm-16-3c.006-1.308,1.994-1.308,2,0-.006,1.308-1.994,1.308-2,0Zm2.832,6.555c-.308,.463-.933,.581-1.387,.277-.46-.306-.584-.927-.277-1.387l4-6c.306-.459,.926-.585,1.387-.277,.46,.306,.584,.927,.277,1.387l-4,6Zm4.168,.445c-1.308-.006-1.308-1.994,0-2,1.308,.006,1.308,1.994,0,2Z" fill="#41ff79ff" data-original-color="#000000ff" stroke="none" />
+                            </g>
+                        </svg>
+                    </h5>
+                    <h5 class="card-title">Coupon Applied</h5>
+                    <p class="card-text">You have saved <strong id="discount_applied_modal">200</strong> on the final bill</p>
+                    <a href="#" class="btn btn-info bg-primary-subtle" style="border-radius:20px;">Yay!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

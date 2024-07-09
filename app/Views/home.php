@@ -25,7 +25,7 @@
         <div class="carousel-inner">
             <?php foreach ($images as $posit => $img) : ?>
                 <div class="carousel-item <?= ($posit == 1) ? 'active' : '' ?> ">
-                    <img src="https://admin.printbizz.in/writable/<?= $img ?>" class="d-block w-100" style="border-radius: 25px;max-height: 23vh !important;" alt="...">
+                    <img src="<?= Params::$admin_img . $img ?>" class="d-block w-100" style="border-radius: 25px;max-height: 23vh !important;" alt="...">
                 </div>
             <?php endforeach ?>
         </div>

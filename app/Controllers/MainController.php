@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\AppSettings;
+use App\Models\Coupon;
 use App\Models\ProductItemnary;
 use App\Models\ProductItemnaryGroup;
 use App\Models\Products;
@@ -30,6 +31,7 @@ class MainController extends BaseController
         $this->itemnary_group = new \App\Models\ProductItemnaryGroup();
         $this->itemnary = new \App\Models\ProductItemnary();
         $this->institutes = new \App\Models\Institutions();
+        $this->coupons = new \App\Models\Coupon();
         $this->orders = new \App\Models\Orders();
         $this->users = new UserModel();
         $this->userIdentities = new UserIdentityModel;
@@ -152,6 +154,7 @@ class MainController extends BaseController
         $data['del_charges'] = $app_settings['del_charge'];
         $data['limit'] = $app_settings['limit'];
         $data['institutes'] = $this->institutes->findAll();
+        $data['coupons'] = $this->coupons->where('status', Coupon::STATUS_ACTIVE)->findAll();
         //Post request data is processed here
         if (!empty($postdata)) {
             $pages = 0;
@@ -355,6 +358,7 @@ class MainController extends BaseController
                 'user_id' => auth()->user()->id,
                 'status' => $this->orders::STATUS_ORDER_PLACED,
                 'itemnary' => json_encode($postdata['itemnary']),
+                'discount' => json_encode($postdata['discount']),
                 'logs' => json_encode([now() => 'Order Placed']),
                 'order_date' => date("Y-m-d H:i:s"),
                 'college_id' => $postdata['address'],
